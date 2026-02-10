@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Валентинка 💘</title>
+  <style>
+    :root{
+      --bg1:#ff4d6d; --bg2:#ffb3c1;
+      --card:#ffffffcc; --text:#1f1f1f;
+      --yes:#2ecc71; --no:#ff4757;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; min-height:100vh;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(1200px 800px at 20% 20%, var(--bg2), transparent 60%),
+                  radial-gradient(1200px 800px at 80% 80%, #ffd6e0, transparent 60%),
+                  linear-gradient(135deg, var(--bg1), #ff758f);
+      display:grid; place-items:center;
+      overflow:hidden;
+      color:var(--text);
+    }
+    /* плавающие сердечки */
+    .heart{
+      position:absolute; width:14px; height:14px;
+      background:#fff;
+      transform: rotate(45deg);
+      opacity:.25;
+      animation: floatUp linear infinite;
+      border-radius:2px;
+    }
+    .heart:before,.heart:after{
+      content:""; position:absolute; width:14px; height:14px;
+      background:#fff; border-radius:50%;
+    }
+    .heart:before{ left:-7px; top:0;}
+    .heart:after{ top:-7px; left:0;}
+    @keyframes floatUp{
+      from{ transform:translateY(30vh) rotate(45deg); }
+      to{ transform:translateY(-120vh) rotate(45deg); }
+    }
+
+    .card{
+      width:min(560px, 92vw);
+      background:var(--card);
+      backdrop-filter: blur(10px);
+      border:1px solid #ffffff70;
+      border-radius:24px;
+      padding:28px 22px;
+      box-shadow: 0 18px 60px rgba(0,0,0,.18);
+      text-align:center;
+      position:relative;
+    }
+    h1{
+      margin:0 0 10px;
+      font-size: clamp(22px, 4vw, 34px);
+      letter-spacing: .3px;
+    }
+    p{
+      margin: 0 0 18px;
+      font-size: clamp(14px, 2.6vw, 16px);
+      opacity:.9;
+    }
+    .buttons{
+      display:flex;
+      gap:14px;
+      justify-content:center;
+      align-items:center;
+      flex-wrap:wrap;
+      margin-top: 16px;
+      position:relative;
+      min-height:72px;
+    }
+    button{
+      border:none;
+      padding:14px 20px;
+      border-radius:16px;
+      font-weight:700;
+      font-size:16px;
+      cursor:pointer;
+      box-shadow: 0 10px 24px rgba(0,0,0,.16);
+      transition: transform .12s ease, filter .12s ease;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    button:active{ transform: translateY(2px) scale(.99); }
+    .yes{ background:var(--yes); color:white; }
+    .yes:hover{ filter:brightness(1.05); transform: translateY(-1px); }
+
+    /* Кнопка "Нет" будет убегать */
+    .no{
+      background:var(--no);
+      color:white;
+      position:absolute; /* важно: чтобы мы могли её двигать */
+      left: 50%;
+      top: 10px;
+      transform: translateX(-50%);
+    }
+
+    /* модалка с фото */
+    .overlay{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.55);
+      display:none;
+      align-items:center; justify-content:center;
+      padding:18px;
+    }
+    .modal{
+      width:min(520px, 92vw);
+      background:white;
+      border-radius:24px;
+      padding:20px;
+      text-align:center;
+      box-shadow: 0 22px 80px rgba(0,0,0,.3);
+      position:relative;
+    }
+    .modal h2{
+      margin: 10px 0 8px;
+      font-size: clamp(22px, 4vw, 30px);
+    }
+    .modal p{ margin:0 0 14px; }
+    .photo{
+      width: 100%;
+      max-width: 360px;
+      aspect-ratio: 1 / 1;
+      border-radius: 18px;
+      object-fit: cover;
+      border: 6px solid #ffe0e8;
+      box-shadow: 0 14px 40px rgba(0,0,0,.18);
+    }
+    .close{
+      margin-top: 10px;
+      background:#111;
+      color:#fff;
+      padding:12px 16px;
+      border-radius:14px;
+      font-weight:700;
+    }
+    .hint{
+      margin-top:10px;
+      font-size:12px;
+      opacity:.7;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- сердечки -->
+  <script>
+    // создаём сердечки на фоне
+    for(let i=0;i<18;i++){
+      const h=document.createElement('div');
+      h.className='heart';
+      const left=Math.random()*100;
+      const dur=6+Math.random()*10;
+      const delay=Math.random()*6;
+      const size=10+Math.random()*16;
+      h.style.left = left+'vw';
+      h.style.animationDuration = dur+'s';
+      h.style.animationDelay = (-delay)+'s';
+      h.style.width = size+'px';
+      h.style.height = size+'px';
+      h.style.opacity = 0.12 + Math.random()*0.25;
+      document.body.appendChild(h);
+    }
+  </script>
+
+  <div class="card">
+    <h1>Ты будешь моей валентинкой? 💘</h1>
+    <p>Я приготовила самый важный вопрос…</p>
+
+    <div class="buttons" id="btnArea">
+      <button class="yes" id="yesBtn">Да 💞</button>
+      <button class="no" id="noBtn">Нет 🙃</button>
+    </div>
+
+    <div class="hint">Подсказка: «Нет» тут очень стесняется 😄</div>
+  </div>
+
+  <!-- Окно после "Да" -->
+  <div class="overlay" id="overlay" role="dialog" aria-modal="true">
+    <div class="modal">
+      <img class="photo" id="photo" alt="Фото" src="blob:https://web.telegram.org/bcd3f18e-068a-42ce-815a-5bdafb475c23">
+      <h2>УРАА! 🥳</h2>
+      <p>Я так счастлива! Люблю тебя! 💖</p>
+      <button class="close" id="closeBtn">Закрыть</button>
+    </div>
+  </div>
+
+  <script>
+    const btnArea = document.getElementById('btnArea');
+    const noBtn = document.getElementById('noBtn');
+    const yesBtn = document.getElementById('yesBtn');
+    const overlay = document.getElementById('overlay');
+    const closeBtn = document.getElementById('closeBtn');
+
+    // ставим "Нет" в пределах области с кнопками
+    function moveNoButton(){
+      const areaRect = btnArea.getBoundingClientRect();
+      const btnRect = noBtn.getBoundingClientRect();
+
+      // доступная область для перемещения (с небольшими отступами)
+      const padding = 6;
+      const maxX = areaRect.width - btnRect.width - padding*2;
+      const maxY = areaRect.height - btnRect.height - padding*2;
+
+      const x = padding + Math.random() * Math.max(0, maxX);
+      const y = padding + Math.random() * Math.max(0, maxY);
+
+      noBtn.style.left = x + "px";
+      noBtn.style.top  = y + "px";
+      noBtn.style.transform = "none";
+    }
+
+    // чтобы корректно работало на телефоне и на ПК
+    noBtn.addEventListener('mouseenter', moveNoButton);
+    noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveNoButton(); }, {passive:false});
+
+    // при клике по Да — показываем окно
+    yesBtn.addEventListener('click', () => {
+      overlay.style.display = 'flex';
+    });
+
+    closeBtn.addEventListener('click', () => {
+      overlay.style.display = 'none';
+    });
+
+    // первый рандомный "побег"
+    window.addEventListener('load', () => {
+      // делаем область чуть выше, чтобы кнопке было где бегать
+      btnArea.style.minHeight = "90px";
+      moveNoButton();
+    });
+  </script>
+
+</body>
+</html>
