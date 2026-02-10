@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Валентинка 💘</title>
+
   <style>
     :root{
       --bg1:#ff4d6d; --bg2:#ffb3c1;
@@ -21,6 +22,7 @@
       overflow:hidden;
       color:var(--text);
     }
+
     /* плавающие сердечки */
     .heart{
       position:absolute; width:14px; height:14px;
@@ -29,6 +31,7 @@
       opacity:.25;
       animation: floatUp linear infinite;
       border-radius:2px;
+      pointer-events:none;
     }
     .heart:before,.heart:after{
       content:""; position:absolute; width:14px; height:14px;
@@ -41,8 +44,16 @@
       to{ transform:translateY(-120vh) rotate(45deg); }
     }
 
+    .wrap{
+      width:100%;
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      padding:18px;
+    }
+
     .card{
-      width:min(560px, 92vw);
+      width:min(720px, 94vw);
       background:var(--card);
       backdrop-filter: blur(10px);
       border:1px solid #ffffff70;
@@ -54,13 +65,14 @@
     }
     h1{
       margin:0 0 10px;
-      font-size: clamp(22px, 4vw, 34px);
+      font-size: clamp(22px, 4vw, 36px);
       letter-spacing: .3px;
     }
     p{
       margin: 0 0 18px;
       font-size: clamp(14px, 2.6vw, 16px);
       opacity:.9;
+      line-height:1.35;
     }
     .buttons{
       display:flex;
@@ -70,7 +82,7 @@
       flex-wrap:wrap;
       margin-top: 16px;
       position:relative;
-      min-height:72px;
+      min-height:92px;
     }
     button{
       border:none;
@@ -88,67 +100,209 @@
     .yes{ background:var(--yes); color:white; }
     .yes:hover{ filter:brightness(1.05); transform: translateY(-1px); }
 
-    /* Кнопка "Нет" будет убегать */
+    /* Кнопка "Нет" убегает */
     .no{
       background:var(--no);
       color:white;
-      position:absolute; /* важно: чтобы мы могли её двигать */
+      position:absolute;
       left: 50%;
       top: 10px;
       transform: translateX(-50%);
     }
 
-    /* модалка с фото */
+    .hint{
+      margin-top:10px;
+      font-size:13px;
+      opacity:.75;
+    }
+
+    /* Экраны */
+    .screen{ display:none; }
+    .screen.active{ display:block; }
+
+    /* Оверлей / модалка */
     .overlay{
       position:fixed; inset:0;
       background: rgba(0,0,0,.55);
       display:none;
       align-items:center; justify-content:center;
       padding:18px;
+      z-index:50;
     }
+    .overlay.show{ display:flex; }
+
     .modal{
-      width:min(520px, 92vw);
+      width:min(640px, 94vw);
       background:white;
       border-radius:24px;
-      padding:20px;
+      padding:18px;
       text-align:center;
       box-shadow: 0 22px 80px rgba(0,0,0,.3);
       position:relative;
     }
     .modal h2{
-      margin: 10px 0 8px;
-      font-size: clamp(22px, 4vw, 30px);
+      margin: 8px 0 6px;
+      font-size: clamp(22px, 4vw, 32px);
     }
-    .modal p{ margin:0 0 14px; }
+    .modal p{ margin:0 0 12px; }
+
     .photo{
       width: 100%;
-      max-width: 360px;
+      max-width: 380px;
       aspect-ratio: 1 / 1;
       border-radius: 18px;
       object-fit: cover;
       border: 6px solid #ffe0e8;
       box-shadow: 0 14px 40px rgba(0,0,0,.18);
     }
-    .close{
-      margin-top: 10px;
+
+    .modal-actions{
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+    .btn-dark{ background:#111; color:#fff; }
+    .btn-soft{ background:#ffe3ea; color:#111; }
+
+    /* История */
+    .story{
+      margin-top: 14px;
+      padding: 18px 16px;
+      background:#ffffffc9;
+      border-radius:20px;
+      border:1px solid #ffffff70;
+      text-align:left;
+      max-width: 760px;
+    }
+    .story h3{
+      margin:0 0 8px;
+      font-size: 20px;
+    }
+    .story .text{
+      font-size: 15px;
+      opacity:.92;
+      line-height:1.5;
+      white-space:pre-line;
+    }
+
+    /* Галерея */
+    .gallery-wrap{
+      margin-top: 14px;
+      background:#ffffffc9;
+      border-radius:20px;
+      border:1px solid #ffffff70;
+      padding: 14px;
+      max-width: 860px;
+    }
+    .gallery-title{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .gallery-title h3{
+      margin:0;
+      font-size: 18px;
+    }
+    .nav{
+      display:flex;
+      gap:8px;
+    }
+    .nav button{
+      padding:10px 12px;
+      border-radius:14px;
+      box-shadow:none;
       background:#111;
       color:#fff;
-      padding:12px 16px;
-      border-radius:14px;
-      font-weight:700;
+      font-size:14px;
     }
-    .hint{
-      margin-top:10px;
-      font-size:12px;
-      opacity:.7;
+
+    .rail{
+      display:flex;
+      overflow:auto;
+      scroll-snap-type:x mandatory;
+      gap:12px;
+      padding-bottom: 6px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .rail::-webkit-scrollbar{ height:10px; }
+    .rail::-webkit-scrollbar-thumb{ background:#00000020; border-radius:999px; }
+
+    .shot{
+      flex: 0 0 min(78vw, 340px);
+      scroll-snap-align: center;
+      border-radius:18px;
+      overflow:hidden;
+      position:relative;
+      box-shadow: 0 12px 30px rgba(0,0,0,.12);
+      background:#fff;
+    }
+    .shot img{
+      width:100%;
+      height: 320px;
+      object-fit: cover;
+      display:block;
+    }
+    .caption{
+      padding:10px 12px;
+      font-size:13px;
+      opacity:.82;
+      background:#fff;
+    }
+
+    /* Пасхалка */
+    .egg{
+      position:fixed;
+      right:14px;
+      bottom:14px;
+      width:44px; height:44px;
+      border-radius:999px;
+      background:#ffffffcc;
+      border:1px solid #ffffff70;
+      box-shadow: 0 14px 40px rgba(0,0,0,.18);
+      display:grid;
+      place-items:center;
+      cursor:pointer;
+      z-index:60;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .egg span{ font-size:20px; }
+
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:70px;
+      transform:translateX(-50%);
+      background:#111;
+      color:#fff;
+      padding:10px 12px;
+      border-radius:14px;
+      box-shadow: 0 14px 40px rgba(0,0,0,.18);
+      display:none;
+      z-index:70;
+      max-width: min(520px, 92vw);
+      text-align:center;
+    }
+    .toast.show{ display:block; }
+
+    /* Мобилка */
+    @media (max-width: 600px){
+      .card{ padding:22px 16px; border-radius:22px; }
+      .buttons{ min-height: 106px; }
+      button{ width: min(220px, 78vw); }
+      .shot img{ height: 280px; }
+      .nav{ display:none; } /* на телефоне свайп и так удобнее */
     }
   </style>
 </head>
-<body>
 
-  <!-- сердечки -->
+<body>
   <script>
-    // создаём сердечки на фоне
+    // сердечки на фоне
     for(let i=0;i<18;i++){
       const h=document.createElement('div');
       h.className='heart';
@@ -166,41 +320,122 @@
     }
   </script>
 
-  <div class="card">
-    <h1> Ника, ты будешь моей валентинкой? 💘</h1>
-    <p>Я приготовила самый важный вопрос…</p>
+  <div class="wrap">
+    <!-- Экран 1 -->
+    <div class="screen active" id="screen1">
+      <div class="card">
+        <h1>Ника, ты будешь моей валентинкой? 💘</h1>
+        <p>Я приготовила самый важный вопрос…</p>
 
-    <div class="buttons" id="btnArea">
-      <button class="yes" id="yesBtn">Да 💞</button>
-      <button class="no" id="noBtn">Нет 🙃</button>
+        <div class="buttons" id="btnArea">
+          <button class="yes" id="yesBtn">Да 💞</button>
+          <button class="no" id="noBtn">Нет 🙃</button>
+        </div>
+
+        <!-- 🔥 ТУТ ТВОЯ ПОДСКАЗКА. Можешь оставить свою -->
+        <div class="hint" id="hintText">Подсказка: (твой текст подсказки) 😊</div>
+      </div>
     </div>
 
-    <div class="hint">Подсказка: иногда судьба оставляет только один вариант💘</div>
+    <!-- Экран 2 (появится после “Да”) -->
+    <div class="screen" id="screen2">
+      <div class="card">
+        <h1>Я знала! 🥹💖</h1>
+        <p>У меня для тебя маленький сюрприз…</p>
+        <button class="btn-dark" id="openModalBtn">Открыть ✨</button>
+        <div class="hint">А дальше будет наша история 🤍</div>
+      </div>
+
+      <div class="story" id="storyBlock" style="display:none;">
+        <h3>Наша история 🤍</h3>
+        <div class="text" id="storyText">
+Мы могли никогда не встретиться.
+Я просто пошла прокалывать хрящ…
+Но одна встреча изменила мою жизнь.
+
+И теперь я каждый день благодарю судьбу за тебя 💖
+        </div>
+      </div>
+
+      <div class="gallery-wrap" id="galleryBlock" style="display:none;">
+        <div class="gallery-title">
+          <h3>Наши моменты 📸</h3>
+          <div class="nav">
+            <button id="prevBtn">←</button>
+            <button id="nextBtn">→</button>
+          </div>
+        </div>
+
+        <div class="rail" id="rail">
+          <!-- Фото вставятся скриптом -->
+        </div>
+
+        <div class="hint">На телефоне листай свайпом ↔</div>
+      </div>
+    </div>
   </div>
 
-  <!-- Окно после "Да" -->
+  <!-- Модалка после “Да” -->
   <div class="overlay" id="overlay" role="dialog" aria-modal="true">
     <div class="modal">
-      <img class="photo" id="photo" alt="Фото" src="[url=https://ibb.co/v6ThbPJH][img]https://i.ibb.co/1tPM3q9L/photo-5213472771701151088-y.jpg[/img][/url]">
+      <img class="photo" id="mainPhoto" alt="Фото" src="img/01.jpg">
       <h2>УРАА! 🥳</h2>
       <p>Я так счастлива! Люблю тебя! 💖</p>
-      <button class="close" id="closeBtn">Закрыть</button>
+
+      <div class="modal-actions">
+        <button class="btn-dark" id="toStoryBtn">Дальше →</button>
+        <button class="btn-soft" id="closeBtn">Закрыть</button>
+      </div>
     </div>
   </div>
 
+  <!-- Пасхалка -->
+  <div class="egg" id="egg" title="Тсс…">
+    <span>💌</span>
+  </div>
+  <div class="toast" id="toast"></div>
+
   <script>
+    // === НАСТРОЙКИ ФОТО ===
+    // Загрузи 10 фото в папку img и назови 01.jpg ... 10.jpg (или поменяй расширение ниже)
+    const photos = [
+      {src:"img/01.jpg", caption:"" },
+      {src:"img/02.jpg", caption:"" },
+      {src:"img/03.jpg", caption:"" },
+      {src:"img/04.jpg", caption:"" },
+      {src:"img/05.jpg", caption:"" },
+      {src:"img/06.jpg", caption:"" },
+      {src:"img/07.jpg", caption:"" },
+      {src:"img/08.jpg", caption:"" },
+      {src:"img/09.jpg", caption:"" },
+      {src:"img/10.jpg", caption:"" }
+    ];
+
     const btnArea = document.getElementById('btnArea');
     const noBtn = document.getElementById('noBtn');
     const yesBtn = document.getElementById('yesBtn');
+
+    const screen1 = document.getElementById('screen1');
+    const screen2 = document.getElementById('screen2');
+
     const overlay = document.getElementById('overlay');
     const closeBtn = document.getElementById('closeBtn');
+    const toStoryBtn = document.getElementById('toStoryBtn');
+    const openModalBtn = document.getElementById('openModalBtn');
 
-    // ставим "Нет" в пределах области с кнопками
+    const storyBlock = document.getElementById('storyBlock');
+    const galleryBlock = document.getElementById('galleryBlock');
+    const rail = document.getElementById('rail');
+
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    const mainPhoto = document.getElementById('mainPhoto');
+
+    // === КНОПКА "НЕТ" УБЕГАЕТ ===
     function moveNoButton(){
       const areaRect = btnArea.getBoundingClientRect();
       const btnRect = noBtn.getBoundingClientRect();
-
-      // доступная область для перемещения (с небольшими отступами)
       const padding = 6;
       const maxX = areaRect.width - btnRect.width - padding*2;
       const maxY = areaRect.height - btnRect.height - padding*2;
@@ -212,29 +447,87 @@
       noBtn.style.top  = y + "px";
       noBtn.style.transform = "none";
     }
-
-    // чтобы корректно работало на телефоне и на ПК
     noBtn.addEventListener('mouseenter', moveNoButton);
     noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveNoButton(); }, {passive:false});
 
-    // при клике по Да — показываем окно
+    window.addEventListener('load', () => moveNoButton());
+
+    // === ПЕРЕХОД НА ЭКРАН 2 ===
+    function goScreen2(){
+      screen1.classList.remove('active');
+      screen2.classList.add('active');
+      // подставим первое фото в модалку
+      if (photos[0]) mainPhoto.src = photos[0].src;
+    }
+
     yesBtn.addEventListener('click', () => {
-      overlay.style.display = 'flex';
+      goScreen2();
+      overlay.classList.add('show'); // сразу “вау-окно”
+    });
+
+    openModalBtn.addEventListener('click', () => {
+      overlay.classList.add('show');
     });
 
     closeBtn.addEventListener('click', () => {
-      overlay.style.display = 'none';
+      overlay.classList.remove('show');
     });
 
-    // первый рандомный "побег"
-    window.addEventListener('load', () => {
-      // делаем область чуть выше, чтобы кнопке было где бегать
-      btnArea.style.minHeight = "90px";
-      moveNoButton();
+    // === СБОРКА ГАЛЕРЕИ ===
+    function renderGallery(){
+      rail.innerHTML = "";
+      photos.forEach((p, idx) => {
+        const card = document.createElement('div');
+        card.className = 'shot';
+        card.innerHTML = `
+          <img src="${p.src}" alt="photo ${idx+1}">
+          <div class="caption">${p.caption || ("Момент №" + (idx+1))}</div>
+        `;
+        rail.appendChild(card);
+      });
+    }
+    renderGallery();
+
+    // кнопки листания (на ПК удобно)
+    function scrollByOne(dir){
+      const first = rail.querySelector('.shot');
+      if(!first) return;
+      const w = first.getBoundingClientRect().width + 12;
+      rail.scrollBy({ left: dir*w, behavior:'smooth' });
+    }
+    prevBtn?.addEventListener('click', () => scrollByOne(-1));
+    nextBtn?.addEventListener('click', () => scrollByOne( 1));
+
+    // === ПОСЛЕ "ДАЛЬШЕ" ПОКАЗЫВАЕМ ИСТОРИЮ + ГАЛЕРЕЮ ===
+    toStoryBtn.addEventListener('click', () => {
+      overlay.classList.remove('show');
+      storyBlock.style.display = 'block';
+      galleryBlock.style.display = 'block';
+      setTimeout(() => storyBlock.scrollIntoView({behavior:'smooth', block:'start'}), 150);
+    });
+
+    // === ПАСХАЛКА ===
+    const egg = document.getElementById('egg');
+    const toast = document.getElementById('toast');
+    let taps = 0;
+    let timer = null;
+
+    function showToast(text){
+      toast.textContent = text;
+      toast.classList.add('show');
+      clearTimeout(timer);
+      timer = setTimeout(() => toast.classList.remove('show'), 2600);
+    }
+
+    egg.addEventListener('click', () => {
+      taps++;
+      if (taps < 7){
+        showToast("Тсс… ещё чуть-чуть 😉 (" + taps + "/7)");
+      } else {
+        taps = 0;
+        showToast("Секрет: ты — мой самый лучший случай. Люблю тебя бесконечно 💖");
+      }
     });
   </script>
-
 </body>
 </html>
-
-
