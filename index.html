@@ -22,9 +22,46 @@
       overflow:hidden;
       color:var(--text);
     }
+    .burst-heart{
+  position: fixed;
+  pointer-events:none;
+  z-index: 999;
+  width: 18px;
+  height: 18px;
+  opacity: 0.95;
+  animation: burst 900ms ease-out forwards;
+  filter: drop-shadow(0 10px 18px rgba(0,0,0,.12));
+}
+@keyframes burst{
+  0%   { transform: translate(0,0) scale(0.8); opacity: 0; }
+  15%  { opacity: 1; }
+  100% { transform: translate(var(--dx), var(--dy)) scale(1.2); opacity: 0; }
+}
 
+    .title-line{
+  white-space: nowrap;          /* одна строка */
+  font-size: clamp(20px, 3.2vw, 34px); /* чуть меньше, чтобы влезало */
+   }
+.pink-heart{
+  display:inline-block;
+  transform: translateY(2px);
+ }
+@media (max-width: 480px){
+  .title-line{ white-space: normal; } /* на совсем маленьких экранах разрешим перенос */
+ }
+    .floating-heart{
+  position:absolute;
+  pointer-events:none;
+  opacity:.22;
+  animation: floatUp linear infinite;
+  filter: drop-shadow(0 8px 14px rgba(0,0,0,.08));
+}
+@keyframes floatUp{
+  from{ transform: translateY(35vh) translateX(0) scale(1) rotate(0deg); }
+  to  { transform: translateY(-120vh) translateX(18px) scale(1.08) rotate(6deg); }
+}
     /* плавающие сердечки */
-    .heart{
+    /* .heart{
       position:absolute; width:14px; height:14px;
       background:#fff;
       transform: rotate(45deg);
@@ -42,7 +79,7 @@
     @keyframes floatUp{
       from{ transform:translateY(30vh) rotate(45deg); }
       to{ transform:translateY(-120vh) rotate(45deg); }
-    }
+    } */
 
     .wrap{
       width:100%;
@@ -303,28 +340,49 @@
 <body>
   <script>
     // сердечки на фоне
-    for(let i=0;i<18;i++){
-      const h=document.createElement('div');
-      h.className='heart';
-      const left=Math.random()*100;
-      const dur=6+Math.random()*10;
-      const delay=Math.random()*6;
-      const size=10+Math.random()*16;
-      h.style.left = left+'vw';
-      h.style.animationDuration = dur+'s';
-      h.style.animationDelay = (-delay)+'s';
-      h.style.width = size+'px';
-      h.style.height = size+'px';
-      h.style.opacity = 0.12 + Math.random()*0.25;
-      document.body.appendChild(h);
+   <script>
+  // SVG сердечко (всегда красивое, без артефактов)
+  const HEART_SVG = `
+  <svg viewBox="0 0 32 29" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+    <path d="M23.6 0c-2.4 0-4.6 1.1-6 2.9C16.2 1.1 14 0 11.6 0
+             7.2 0 3.6 3.6 3.6 8c0 8.6 12.4 15.9 14 16.8
+             1.6-.9 14-8.2 14-16.8 0-4.4-3.6-8-8-8z"
+          fill="rgba(255,255,255,0.65)"/>
+  </svg>`;
+
+  function spawnFloatingHearts(count = 18){
+    for(let i=0;i<count;i++){
+      const el = document.createElement('div');
+      el.className = 'floating-heart';
+      el.innerHTML = HEART_SVG;
+
+      const size = 14 + Math.random()*22;       // размер
+      const left = Math.random()*100;           // позиция
+      const dur  = 8 + Math.random()*10;        // скорость
+      const delay= Math.random()*6;             // задержка
+
+      el.style.width  = size + 'px';
+      el.style.height = size + 'px';
+      el.style.left   = left + 'vw';
+      el.style.bottom = (-40 - Math.random()*120) + 'px';
+      el.style.animationDuration = dur + 's';
+      el.style.animationDelay    = (-delay) + 's';
+      el.style.opacity = 0.10 + Math.random()*0.22;
+
+      document.body.appendChild(el);
     }
-  </script>
+  }
+
+  spawnFloatingHearts(18);
+</script>
 
   <div class="wrap">
     <!-- Экран 1 -->
     <div class="screen active" id="screen1">
       <div class="card">
-        <h1>Ника, ты будешь моей валентинкой? 💘</h1>
+        <h1 class="title-line">
+          Ника, ты будешь моей валентинкой? <span class="pink-heart">💗</span>
+        </h1>
         <p>Я приготовила самый важный вопрос…</p>
 
         <div class="buttons" id="btnArea">
@@ -380,7 +438,7 @@
     <div class="modal">
       <img class="photo" id="mainPhoto" alt="Фото" src="img/00.jpg">
       <h2>УРАА! 🥳</h2>
-      <p>Я так счастлива! Люблю тебя! 💖</p>
+      <p>Я знала, что ты сделаешь правильный выбор! Люблю тебя! 💖</p>
 
       <div class="modal-actions">
         <button class="btn-dark" id="toStoryBtn">Дальше →</button>
@@ -399,6 +457,7 @@
     // === НАСТРОЙКИ ФОТО ===
     // Загрузи 10 фото в папку img и назови 01.jpg ... 10.jpg (или поменяй расширение ниже)
     const photos = [
+      {src:"img/00.jpg", caption:"" },
       {src:"img/01.jpg", caption:"" },
       {src:"img/02.jpg", caption:"" },
       {src:"img/03.jpg", caption:"" },
@@ -459,12 +518,47 @@
       // подставим первое фото в модалку
       if (photos[0]) mainPhoto.src = photos[0].src;
     }
+function heartBurstFrom(element){
+  const rect = element.getBoundingClientRect();
+  const x = rect.left + rect.width/2;
+  const y = rect.top + rect.height/2;
+
+  const pieces = 18;
+  for(let i=0;i<pieces;i++){
+    const p = document.createElement('div');
+    p.className = 'burst-heart';
+    p.innerHTML = `<svg viewBox="0 0 32 29" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+      <path d="M23.6 0c-2.4 0-4.6 1.1-6 2.9C16.2 1.1 14 0 11.6 0
+               7.2 0 3.6 3.6 3.6 8c0 8.6 12.4 15.9 14 16.8
+               1.6-.9 14-8.2 14-16.8 0-4.4-3.6-8-8-8z"
+            fill="rgba(255,105,180,0.9)"/>
+    </svg>`;
+
+    p.style.left = x + 'px';
+    p.style.top  = y + 'px';
+
+    const angle = Math.random() * Math.PI * 2;
+    const dist  = 60 + Math.random()*120;
+    const dx = Math.cos(angle) * dist;
+    const dy = Math.sin(angle) * dist - 40;
+
+    p.style.setProperty('--dx', dx + 'px');
+    p.style.setProperty('--dy', dy + 'px');
+
+    const size = 12 + Math.random()*16;
+    p.style.width = size + 'px';
+    p.style.height= size + 'px';
+
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 950);
+  }
+}
 
     yesBtn.addEventListener('click', () => {
-      goScreen2();
-      overlay.classList.add('show'); // сразу “вау-окно”
-    });
-
+  heartBurstFrom(yesBtn);      // 💥 взрыв сердечек
+  goScreen2();
+  overlay.classList.add('show');
+});
     openModalBtn.addEventListener('click', () => {
       overlay.classList.add('show');
     });
@@ -531,4 +625,5 @@
   </script>
 </body>
 </html>
+
 
