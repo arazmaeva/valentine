@@ -1,360 +1,207 @@
 <!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Валентинка 💘</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Валентинка 💘</title>
 
-  <style>
-    :root{
-      --bg1:#ff4d6d; --bg2:#ffb3c1;
-      --card:#ffffffcc; --text:#1f1f1f;
-      --yes:#2ecc71; --no:#ff4757;
-    }
-    *{box-sizing:border-box}
+<style>
+:root{
+  --bg1:#ff4d6d; --bg2:#ffb3c1;
+  --card:#ffffffcc; --text:#1f1f1f;
+  --yes:#2ecc71; --no:#ff4757;
+}
+*{box-sizing:border-box}
 
-    body{
-      margin:0; min-height:100vh;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background: radial-gradient(1200px 800px at 20% 20%, var(--bg2), transparent 60%),
-                  radial-gradient(1200px 800px at 80% 80%, #ffd6e0, transparent 60%),
-                  linear-gradient(135deg, var(--bg1), #ff758f);
-      display:grid; place-items:center;
-      overflow:hidden;
-      color:var(--text);
-    }
+body{
+  margin:0;
+  font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  background:
+    radial-gradient(1200px 800px at 20% 20%, var(--bg2), transparent 60%),
+    radial-gradient(1200px 800px at 80% 80%, #ffd6e0, transparent 60%),
+    linear-gradient(135deg, var(--bg1), #ff758f);
+  color:var(--text);
+  overflow-x:hidden;   /* можно скроллить вверх/вниз */
+}
 
-    /* Заголовок в одну строку */
-    .title-line{
-      white-space: nowrap;
-      font-size: clamp(20px, 3.2vw, 34px);
-    }
-    .pink-heart{
-      display:inline-block;
-      transform: translateY(2px);
-    }
-    @media (max-width: 480px){
-      .title-line{ white-space: normal; } /* на совсем маленьких экранах разрешаем перенос */
-    }
+/* Плавающие сердечки */
+.floating-heart{
+  position:fixed;
+  pointer-events:none;
+  opacity:.22;
+  animation: floatUp linear infinite;
+}
+@keyframes floatUp{
+  from{ transform: translateY(100vh); }
+  to{ transform: translateY(-120vh); }
+}
 
-    /* Плавающие SVG-сердечки */
-    .floating-heart{
-      position:absolute;
-      pointer-events:none;
-      opacity:.22;
-      animation: floatUp linear infinite;
-      filter: drop-shadow(0 8px 14px rgba(0,0,0,.08));
-    }
-    @keyframes floatUp{
-      from{ transform: translateY(35vh) translateX(0) scale(1) rotate(0deg); }
-      to  { transform: translateY(-120vh) translateX(18px) scale(1.08) rotate(6deg); }
-    }
+/* Контент */
+.wrap{
+  width:100%;
+  padding:20px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
 
-    /* Взрыв сердечек */
-    .burst-heart{
-      position: fixed;
-      pointer-events:none;
-      z-index: 999;
-      width: 18px;
-      height: 18px;
-      opacity: 0.95;
-      animation: burst 900ms ease-out forwards;
-      filter: drop-shadow(0 10px 18px rgba(0,0,0,.12));
-    }
-    @keyframes burst{
-      0%   { transform: translate(0,0) scale(0.8); opacity: 0; }
-      15%  { opacity: 1; }
-      100% { transform: translate(var(--dx), var(--dy)) scale(1.2); opacity: 0; }
-    }
+.card{
+  width:min(720px, 94vw);
+  background:var(--card);
+  backdrop-filter: blur(10px);
+  border-radius:24px;
+  padding:28px 22px;
+  box-shadow: 0 18px 60px rgba(0,0,0,.18);
+  text-align:center;
+  margin-bottom:20px;
+}
 
-    .wrap{
-      width:100%;
-      min-height:100vh;
-      display:grid;
-      place-items:center;
-      padding:18px;
-    }
+.title-line{
+  white-space: nowrap;
+  font-size: clamp(20px, 3.2vw, 34px);
+}
+@media (max-width:480px){
+  .title-line{ white-space:normal; }
+}
 
-    .card{
-      width:min(720px, 94vw);
-      background:var(--card);
-      backdrop-filter: blur(10px);
-      border:1px solid #ffffff70;
-      border-radius:24px;
-      padding:28px 22px;
-      box-shadow: 0 18px 60px rgba(0,0,0,.18);
-      text-align:center;
-      position:relative;
-    }
-    h1{
-      margin:0 0 10px;
-      font-size: clamp(22px, 4vw, 36px);
-      letter-spacing: .3px;
-    }
-    p{
-      margin: 0 0 18px;
-      font-size: clamp(14px, 2.6vw, 16px);
-      opacity:.9;
-      line-height:1.35;
-    }
-    .buttons{
-      display:flex;
-      gap:14px;
-      justify-content:center;
-      align-items:center;
-      flex-wrap:wrap;
-      margin-top: 16px;
-      position:relative;
-      min-height:92px;
-    }
-    button{
-      border:none;
-      padding:14px 20px;
-      border-radius:16px;
-      font-weight:700;
-      font-size:16px;
-      cursor:pointer;
-      box-shadow: 0 10px 24px rgba(0,0,0,.16);
-      transition: transform .12s ease, filter .12s ease;
-      user-select:none;
-      -webkit-tap-highlight-color: transparent;
-    }
-    button:active{ transform: translateY(2px) scale(.99); }
-    .yes{ background:var(--yes); color:white; }
-    .yes:hover{ filter:brightness(1.05); transform: translateY(-1px); }
+.buttons{
+  display:flex;
+  justify-content:center;
+  gap:14px;
+  position:relative;
+  min-height:80px;
+}
 
-    /* Кнопка "Нет" убегает */
-    .no{
-      background:var(--no);
-      color:white;
-      position:absolute;
-      left: 50%;
-      top: 10px;
-      transform: translateX(-50%);
-    }
+button{
+  border:none;
+  padding:14px 20px;
+  border-radius:16px;
+  font-weight:700;
+  font-size:16px;
+  cursor:pointer;
+}
 
-    .hint{
-      margin-top:10px;
-      font-size:13px;
-      opacity:.75;
-    }
+.yes{background:var(--yes);color:white;}
+.no{
+  background:var(--no);
+  color:white;
+  position:absolute;
+}
 
-    /* Экраны */
-    .screen{ display:none; }
-    .screen.active{ display:block; }
+.screen{display:none;}
+.screen.active{display:block;}
 
-    /* Оверлей / модалка */
-    .overlay{
-      position:fixed; inset:0;
-      background: rgba(0,0,0,.55);
-      display:none;
-      align-items:center; justify-content:center;
-      padding:18px;
-      z-index:50;
-    }
-    .overlay.show{ display:flex; }
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:10;
+}
+.overlay.show{display:flex;}
 
-    .modal{
-      width:min(640px, 94vw);
-      background:white;
-      border-radius:24px;
-      padding:18px;
-      text-align:center;
-      box-shadow: 0 22px 80px rgba(0,0,0,.3);
-      position:relative;
-    }
-    .modal h2{
-      margin: 8px 0 6px;
-      font-size: clamp(22px, 4vw, 32px);
-    }
-    .modal p{ margin:0 0 12px; }
+.modal{
+  background:white;
+  border-radius:24px;
+  padding:20px;
+  text-align:center;
+  width:min(600px,90vw);
+}
 
-    .photo{
-      width: 100%;
-      max-width: 380px;
-      aspect-ratio: 1 / 1;
-      border-radius: 18px;
-      object-fit: cover;
-      border: 6px solid #ffe0e8;
-      box-shadow: 0 14px 40px rgba(0,0,0,.18);
-    }
+.photo{
+  width:100%;
+  max-width:300px;
+  border-radius:16px;
+  margin-bottom:15px;
+}
 
-    .modal-actions{
-      display:flex;
-      gap:10px;
-      justify-content:center;
-      flex-wrap:wrap;
-      margin-top:10px;
-    }
-    .btn-dark{ background:#111; color:#fff; }
-    .btn-soft{ background:#ffe3ea; color:#111; }
+.story, .gallery-wrap{
+  width:min(860px,94vw);
+  background:#ffffffc9;
+  border-radius:20px;
+  padding:18px;
+  margin-bottom:20px;
+}
 
-    /* История */
-    .story{
-      margin-top: 14px;
-      padding: 18px 16px;
-      background:#ffffffc9;
-      border-radius:20px;
-      border:1px solid #ffffff70;
-      text-align:left;
-      max-width: 760px;
-    }
-    .story h3{
-      margin:0 0 8px;
-      font-size: 20px;
-    }
-    .story .text{
-      font-size: 15px;
-      opacity:.92;
-      line-height:1.5;
-      white-space:pre-line;
-    }
+.rail{
+  display:flex;
+  gap:12px;
+  overflow-x:auto;
+}
 
-    /* Галерея */
-    .gallery-wrap{
-      margin-top: 14px;
-      background:#ffffffc9;
-      border-radius:20px;
-      border:1px solid #ffffff70;
-      padding: 14px;
-      max-width: 860px;
-    }
-    .gallery-title{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
-      margin-bottom:10px;
-    }
-    .gallery-title h3{
-      margin:0;
-      font-size: 18px;
-    }
-    .nav{
-      display:flex;
-      gap:8px;
-    }
-    .nav button{
-      padding:10px 12px;
-      border-radius:14px;
-      box-shadow:none;
-      background:#111;
-      color:#fff;
-      font-size:14px;
-    }
+.shot{
+  flex:0 0 250px;
+  background:white;
+  border-radius:18px;
+  overflow:hidden;
+}
+.shot img{
+  width:100%;
+  height:260px;
+  object-fit:cover;
+}
 
-    .rail{
-      display:flex;
-      overflow:auto;
-      scroll-snap-type:x mandatory;
-      gap:12px;
-      padding-bottom: 6px;
-      -webkit-overflow-scrolling: touch;
-    }
-    .rail::-webkit-scrollbar{ height:10px; }
-    .rail::-webkit-scrollbar-thumb{ background:#00000020; border-radius:999px; }
+.egg{
+  position:fixed;
+  right:14px;
+  bottom:14px;
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  background:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+}
 
-    .shot{
-      flex: 0 0 min(78vw, 340px);
-      scroll-snap-align: center;
-      border-radius:18px;
-      overflow:hidden;
-      position:relative;
-      box-shadow: 0 12px 30px rgba(0,0,0,.12);
-      background:#fff;
-    }
-    .shot img{
-      width:100%;
-      height: 320px;
-      object-fit: cover;
-      display:block;
-    }
-    .caption{
-      padding:10px 12px;
-      font-size:13px;
-      opacity:.82;
-      background:#fff;
-    }
+.toast{
+  position:fixed;
+  bottom:80px;
+  left:50%;
+  transform:translateX(-50%);
+  background:black;
+  color:white;
+  padding:10px 14px;
+  border-radius:12px;
+  display:none;
+}
+.toast.show{display:block;}
 
-    /* Пасхалка */
-    .egg{
-      position:fixed;
-      right:14px;
-      bottom:14px;
-      width:44px; height:44px;
-      border-radius:999px;
-      background:#ffffffcc;
-      border:1px solid #ffffff70;
-      box-shadow: 0 14px 40px rgba(0,0,0,.18);
-      display:grid;
-      place-items:center;
-      cursor:pointer;
-      z-index:60;
-      user-select:none;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .egg span{ font-size:20px; }
-
-    .toast{
-      position:fixed;
-      left:50%;
-      bottom:70px;
-      transform:translateX(-50%);
-      background:#111;
-      color:#fff;
-      padding:10px 12px;
-      border-radius:14px;
-      box-shadow: 0 14px 40px rgba(0,0,0,.18);
-      display:none;
-      z-index:70;
-      max-width: min(520px, 92vw);
-      text-align:center;
-    }
-    .toast.show{ display:block; }
-
-    /* Мобилка */
-    @media (max-width: 600px){
-      .card{ padding:22px 16px; border-radius:22px; }
-      .buttons{ min-height: 106px; }
-      button{ width: min(220px, 78vw); }
-      .shot img{ height: 280px; }
-      .nav{ display:none; }
-    }
-  </style>
+@media (max-width:600px){
+  .shot{flex:0 0 70vw;}
+}
+</style>
 </head>
 
 <body>
-  <div class="wrap">
 
-    <!-- Экран 1 -->
-    <div class="screen active" id="screen1">
-      <div class="card">
-        <h1 class="title-line">
-          Ника, ты будешь моей валентинкой? <span class="pink-heart">💗</span>
-        </h1>
-        <p>Я приготовила самый важный вопрос…</p>
+<div class="wrap">
 
-        <div class="buttons" id="btnArea">
-          <button class="yes" id="yesBtn">Да 💞</button>
-          <button class="no" id="noBtn">Нет 🙃</button>
-        </div>
-
-        <div class="hint" id="hintText">Подсказка: иногда судьба оставляет только один вариант 💘</div>
-      </div>
+<div class="screen active" id="screen1">
+  <div class="card">
+    <h1 class="title-line">Ника, ты будешь моей валентинкой? 💗</h1>
+    <p>Я приготовила самый важный вопрос…</p>
+    <div class="buttons" id="btnArea">
+      <button class="yes" id="yesBtn">Да 💞</button>
+      <button class="no" id="noBtn">Нет 🙃</button>
     </div>
+  </div>
+</div>
 
-    <!-- Экран 2 -->
-    <div class="screen" id="screen2">
-      <div class="card">
-        <h1>Я знала! 🥹💖</h1>
-        <p>У меня для тебя маленький сюрприз…</p>
-        <button class="btn-dark" id="openModalBtn">Открыть ✨</button>
-        <div class="hint">А дальше будет наша история 🤍</div>
-      </div>
+<div class="screen" id="screen2">
 
-      <div class="story" id="storyBlock" style="display:none;">
-        <h3>Наша история 🤍</h3>
-        <div class="text" id="storyText">
+  <div class="card">
+    <h1>Я знала! 🥹💖</h1>
+    <p>Теперь ты моя валентинка 🤍</p>
+    <button id="openModalBtn">Открыть ✨</button>
+  </div>
+
+  <div class="story" id="storyBlock" style="display:none;">
+    <h3>Наша история 🤍</h3>
+    <p>
 Иногда судьба прячется в одном случайном решении.
 Я просто пошла прокалывать хрящ в обеденный перерыв.
 Сомневалась.
@@ -382,240 +229,96 @@
 И я поняла — иногда один случайный орёл
 приводит к самой большой любви 🤍
 И теперь я каждый день благодарю судьбу за тебя 💖
-        </div>
-      </div>
-
-      <div class="gallery-wrap" id="galleryBlock" style="display:none;">
-        <div class="gallery-title">
-          <h3>Наши моменты 📸</h3>
-          <div class="nav">
-            <button id="prevBtn">←</button>
-            <button id="nextBtn">→</button>
-          </div>
-        </div>
-
-        <div class="rail" id="rail"></div>
-
-        <div class="hint">На телефоне листай свайпом ↔</div>
-      </div>
-    </div>
+    </p>
   </div>
 
-  <!-- Модалка -->
-  <div class="overlay" id="overlay" role="dialog" aria-modal="true">
-    <div class="modal">
-      <img class="photo" id="mainPhoto" alt="Фото" src="img/00.jpg">
-      <h2>УРАА! 🥳</h2>
-      <p>Я знала, что ты сделаешь правильный выбор! Люблю тебя! 💖</p>
-
-      <div class="modal-actions">
-        <button class="btn-dark" id="toStoryBtn">Дальше →</button>
-        <button class="btn-soft" id="closeBtn">Закрыть</button>
-      </div>
-    </div>
+  <div class="gallery-wrap" id="galleryBlock" style="display:none;">
+    <h3>Наши моменты 📸</h3>
+    <div class="rail" id="rail"></div>
   </div>
 
-  <!-- Пасхалка -->
-  <div class="egg" id="egg" title="Тсс…"><span>💌</span></div>
-  <div class="toast" id="toast"></div>
+</div>
+</div>
 
-  <script>
-    // === SVG сердечки для фона (без “гибридов”) ===
-    const HEART_SVG = `
-      <svg viewBox="0 0 32 29" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-        <path d="M23.6 0c-2.4 0-4.6 1.1-6 2.9C16.2 1.1 14 0 11.6 0
-                 7.2 0 3.6 3.6 3.6 8c0 8.6 12.4 15.9 14 16.8
-                 1.6-.9 14-8.2 14-16.8 0-4.4-3.6-8-8-8z"
-              fill="rgba(255,255,255,0.65)"/>
-      </svg>`;
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <img class="photo" src="img/00.jpg">
+    <h2>УРАА! 🥳</h2>
+    <p>Теперь ты моя валентинка 💖</p>
+    <button id="toStoryBtn">Дальше →</button>
+  </div>
+</div>
 
-    function spawnFloatingHearts(count = 18){
-      for(let i=0;i<count;i++){
-        const el = document.createElement('div');
-        el.className = 'floating-heart';
-        el.innerHTML = HEART_SVG;
+<div class="egg" id="egg">💌</div>
+<div class="toast" id="toast"></div>
 
-        const size = 14 + Math.random()*22;
-        const left = Math.random()*100;
-        const dur  = 8 + Math.random()*10;
-        const delay= Math.random()*6;
+<script>
 
-        el.style.width  = size + 'px';
-        el.style.height = size + 'px';
-        el.style.left   = left + 'vw';
-        el.style.bottom = (-40 - Math.random()*120) + 'px';
-        el.style.animationDuration = dur + 's';
-        el.style.animationDelay    = (-delay) + 's';
-        el.style.opacity = 0.10 + Math.random()*0.22;
+/* Фоновые сердечки */
+for(let i=0;i<20;i++){
+  const h=document.createElement('div');
+  h.className='floating-heart';
+  h.innerHTML='💗';
+  h.style.left=Math.random()*100+'vw';
+  h.style.fontSize=(14+Math.random()*20)+'px';
+  h.style.animationDuration=(6+Math.random()*8)+'s';
+  document.body.appendChild(h);
+}
 
-        document.body.appendChild(el);
-      }
-    }
-    spawnFloatingHearts(18);
+/* Фото (без 00.jpg) */
+const photos=[
+"img/01.jpg","img/02.jpg","img/03.jpg","img/04.jpg",
+"img/05.jpg","img/06.jpg","img/07.jpg","img/08.jpg",
+"img/09.jpg"
+];
 
-    // === ФОТО (10 штук): 00.jpg ... 09.jpg ===
-    const photos = [
-      {src:"img/00.jpg", caption:"" },
-      {src:"img/01.jpg", caption:"" },
-      {src:"img/02.jpg", caption:"" },
-      {src:"img/03.jpg", caption:"" },
-      {src:"img/04.jpg", caption:"" },
-      {src:"img/05.jpg", caption:"" },
-      {src:"img/06.jpg", caption:"" },
-      {src:"img/07.jpg", caption:"" },
-      {src:"img/08.jpg", caption:"" },
-      {src:"img/09.jpg", caption:"" }
-    ];
+const rail=document.getElementById('rail');
+photos.forEach((src,i)=>{
+  rail.innerHTML+=`<div class="shot"><img src="${src}"></div>`;
+});
 
-    const btnArea = document.getElementById('btnArea');
-    const noBtn = document.getElementById('noBtn');
-    const yesBtn = document.getElementById('yesBtn');
+/* Кнопка нет */
+const noBtn=document.getElementById('noBtn');
+noBtn.addEventListener('mouseenter',()=>{
+  noBtn.style.left=Math.random()*200+'px';
+  noBtn.style.top=Math.random()*60+'px';
+});
 
-    const screen1 = document.getElementById('screen1');
-    const screen2 = document.getElementById('screen2');
+/* Переход */
+const yesBtn=document.getElementById('yesBtn');
+const screen1=document.getElementById('screen1');
+const screen2=document.getElementById('screen2');
+const overlay=document.getElementById('overlay');
 
-    const overlay = document.getElementById('overlay');
-    const closeBtn = document.getElementById('closeBtn');
-    const toStoryBtn = document.getElementById('toStoryBtn');
-    const openModalBtn = document.getElementById('openModalBtn');
+yesBtn.onclick=()=>{
+  screen1.classList.remove('active');
+  screen2.classList.add('active');
+  overlay.classList.add('show');
+};
 
-    const storyBlock = document.getElementById('storyBlock');
-    const galleryBlock = document.getElementById('galleryBlock');
-    const rail = document.getElementById('rail');
+document.getElementById('toStoryBtn').onclick=()=>{
+  overlay.classList.remove('show');
+  document.getElementById('storyBlock').style.display='block';
+  document.getElementById('galleryBlock').style.display='block';
+};
 
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
+/* Пасхалка */
+const egg=document.getElementById('egg');
+const toast=document.getElementById('toast');
+let taps=0;
 
-    const mainPhoto = document.getElementById('mainPhoto');
+egg.onclick=()=>{
+  taps++;
+  if(taps<7){
+    toast.innerText="Ещё чуть-чуть… 😉 ("+taps+"/7)";
+  }else{
+    taps=0;
+    toast.innerHTML='<a href="https://www.youtube.com/results?search_query=Green+Book+1%3A09%3A53" target="_blank" style="color:white;text-decoration:underline;">Зелёная книга — 1:09:53</a>';
+  }
+  toast.classList.add('show');
+  setTimeout(()=>toast.classList.remove('show'),3000);
+};
 
-    // === "НЕТ" убегает ===
-    function moveNoButton(){
-      const areaRect = btnArea.getBoundingClientRect();
-      const btnRect = noBtn.getBoundingClientRect();
-      const padding = 6;
-      const maxX = areaRect.width - btnRect.width - padding*2;
-      const maxY = areaRect.height - btnRect.height - padding*2;
-
-      const x = padding + Math.random() * Math.max(0, maxX);
-      const y = padding + Math.random() * Math.max(0, maxY);
-
-      noBtn.style.left = x + "px";
-      noBtn.style.top  = y + "px";
-      noBtn.style.transform = "none";
-    }
-    noBtn.addEventListener('mouseenter', moveNoButton);
-    noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveNoButton(); }, {passive:false});
-    window.addEventListener('load', () => moveNoButton());
-
-    // === ВЗРЫВ сердечек ===
-    function heartBurstFrom(element){
-      const rect = element.getBoundingClientRect();
-      const x = rect.left + rect.width/2;
-      const y = rect.top + rect.height/2;
-
-      const pieces = 18;
-      for(let i=0;i<pieces;i++){
-        const p = document.createElement('div');
-        p.className = 'burst-heart';
-        p.innerHTML = `
-          <svg viewBox="0 0 32 29" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <path d="M23.6 0c-2.4 0-4.6 1.1-6 2.9C16.2 1.1 14 0 11.6 0
-                     7.2 0 3.6 3.6 3.6 8c0 8.6 12.4 15.9 14 16.8
-                     1.6-.9 14-8.2 14-16.8 0-4.4-3.6-8-8-8z"
-                  fill="rgba(255,105,180,0.9)"/>
-          </svg>`;
-
-        p.style.left = x + 'px';
-        p.style.top  = y + 'px';
-
-        const angle = Math.random() * Math.PI * 2;
-        const dist  = 60 + Math.random()*120;
-        const dx = Math.cos(angle) * dist;
-        const dy = Math.sin(angle) * dist - 40;
-
-        p.style.setProperty('--dx', dx + 'px');
-        p.style.setProperty('--dy', dy + 'px');
-
-        const size = 12 + Math.random()*16;
-        p.style.width = size + 'px';
-        p.style.height= size + 'px';
-
-        document.body.appendChild(p);
-        setTimeout(() => p.remove(), 950);
-      }
-    }
-
-    // === Переход на экран 2 ===
-    function goScreen2(){
-      screen1.classList.remove('active');
-      screen2.classList.add('active');
-      if (photos[0]) mainPhoto.src = photos[0].src; // 00.jpg
-    }
-
-    yesBtn.addEventListener('click', () => {
-      heartBurstFrom(yesBtn);
-      goScreen2();
-      overlay.classList.add('show');
-    });
-
-    openModalBtn.addEventListener('click', () => overlay.classList.add('show'));
-    closeBtn.addEventListener('click', () => overlay.classList.remove('show'));
-
-    // === Галерея ===
-    function renderGallery(){
-      rail.innerHTML = "";
-      photos.forEach((p, idx) => {
-        const card = document.createElement('div');
-        card.className = 'shot';
-        card.innerHTML = `
-          <img src="${p.src}" alt="photo ${idx+1}">
-          <div class="caption">${p.caption || ("Момент №" + (idx+1))}</div>
-        `;
-        rail.appendChild(card);
-      });
-    }
-    renderGallery();
-
-    function scrollByOne(dir){
-      const first = rail.querySelector('.shot');
-      if(!first) return;
-      const w = first.getBoundingClientRect().width + 12;
-      rail.scrollBy({ left: dir*w, behavior:'smooth' });
-    }
-    prevBtn?.addEventListener('click', () => scrollByOne(-1));
-    nextBtn?.addEventListener('click', () => scrollByOne( 1));
-
-    // === После “Дальше” — история и фото ===
-    toStoryBtn.addEventListener('click', () => {
-      overlay.classList.remove('show');
-      storyBlock.style.display = 'block';
-      galleryBlock.style.display = 'block';
-      setTimeout(() => storyBlock.scrollIntoView({behavior:'smooth', block:'start'}), 150);
-    });
-
-    // === Пасхалка ===
-    const egg = document.getElementById('egg');
-    const toast = document.getElementById('toast');
-    let taps = 0;
-    let timer = null;
-
-    function showToast(text){
-      toast.textContent = text;
-      toast.classList.add('show');
-      clearTimeout(timer);
-      timer = setTimeout(() => toast.classList.remove('show'), 2600);
-    }
-
-    egg.addEventListener('click', () => {
-      taps++;
-      if (taps < 7){
-        showToast("Тсс… ещё чуть-чуть 😉 (" + taps + "/7)");
-      } else {
-        taps = 0;
-        showToast("Секрет: ты — мой самый лучший случай. Люблю тебя бесконечно 💖");
-      }
-    });
-  </script>
+</script>
 </body>
 </html>
-
