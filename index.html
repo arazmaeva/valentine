@@ -13,7 +13,7 @@
 }
 *{box-sizing:border-box}
 
-/* ✅ нормальный скролл на ПК/мобилке */
+/* ✅ нормальный скролл */
 html, body{
   height:100%;
   overflow-x:hidden;
@@ -44,15 +44,23 @@ body{
   to{ transform: translateY(-140vh); }
 }
 
-/* Контент */
+/* ✅ Центровка как раньше на ПК:
+   wrap занимает минимум высоту экрана и центрирует первый экран */
 .wrap{
   width:100%;
+  min-height:100vh;
   padding:20px;
   display:flex;
   flex-direction:column;
   align-items:center;
+  justify-content:center; /* главное */
   position:relative;
   z-index:1;
+}
+
+/* Когда появится экран 2, пусть можно нормально скроллить вниз */
+.wrap.has-long{
+  justify-content:flex-start;
 }
 
 .card{
@@ -73,106 +81,133 @@ body{
   line-height:1.15;
 }
 
-/* ✅ мишка (HTML + CSS) — всегда виден */
+p{
+  margin: 0 0 12px;
+  font-size: clamp(14px, 2.6vw, 16px);
+  opacity:.9;
+  line-height:1.35;
+}
+
+/* ✅ Новый мишка (милее + с глазками) */
 .bear-wrap{
-  width: 160px;
-  height: 130px;
+  width: 170px;
+  height: 140px;
   margin: 2px auto 10px;
   position: relative;
-  animation: bearFloat 2.6s ease-in-out infinite;
-  filter: drop-shadow(0 10px 18px rgba(0,0,0,.10));
+  animation: bearFloat 2.7s ease-in-out infinite;
+  filter: drop-shadow(0 12px 18px rgba(0,0,0,.10));
 }
 @keyframes bearFloat{
   0%,100%{ transform: translateY(0) }
-  50%{ transform: translateY(-7px) }
+  50%{ transform: translateY(-8px) }
 }
-.bear{
+.bear2{
   position:absolute;
   left:50%; top:50%;
   transform: translate(-50%, -50%);
-  width: 140px; height: 120px;
+  width: 150px; height: 130px;
 }
-.bear .ear{
-  position:absolute; top:6px;
-  width:30px; height:30px;
-  background:#c98f6b;
+.bear2 .ear{
+  position:absolute; top:14px;
+  width:34px; height:34px;
+  background:#c78c67;
   border-radius:50%;
 }
-.bear .ear:after{
+.bear2 .ear:after{
   content:"";
-  position:absolute; inset:8px;
-  background:#f2c7b1;
+  position:absolute; inset:9px;
+  background:#f6d0bd;
   border-radius:50%;
-  opacity:.95;
 }
-.bear .ear.left{ left:18px; }
-.bear .ear.right{ right:18px; }
+.bear2 .ear.left{ left:18px; }
+.bear2 .ear.right{ right:18px; }
 
-.bear .head{
-  position:absolute; top:18px; left:50%;
+.bear2 .head{
+  position:absolute; top:22px; left:50%;
   transform: translateX(-50%);
-  width:100px; height:90px;
+  width:110px; height:98px;
   background:#d9a07b;
+  border-radius: 48% 48% 52% 52%;
+}
+.bear2 .cheek{
+  position:absolute; top:54px;
+  width:16px; height:10px;
+  background:#ffb3c1;
+  opacity:.75;
+  border-radius: 999px;
+  filter: blur(.2px);
+}
+.bear2 .cheek.left{ left:16px; }
+.bear2 .cheek.right{ right:16px; }
+
+.bear2 .eye{
+  position:absolute; top:44px;
+  width:12px; height:12px;
+  background:#222;
   border-radius:50%;
 }
-.bear .muzzle{
-  position:absolute; bottom:10px; left:50%;
+.bear2 .eye.left{ left:30px; }
+.bear2 .eye.right{ right:30px; }
+.bear2 .eye:after{
+  content:"";
+  position:absolute; top:2px; left:2px;
+  width:4px; height:4px;
+  background:#fff;
+  border-radius:50%;
+  opacity:.9;
+}
+
+.bear2 .muzzle{
+  position:absolute; top:58px; left:50%;
   transform: translateX(-50%);
-  width:72px; height:52px;
-  background:#f2c7b1;
+  width:76px; height:54px;
+  background:#f6d0bd;
   border-radius: 50%;
 }
-.bear .eye{
-  position:absolute; top:32px;
-  width:10px; height:10px;
+.bear2 .nose{
+  position:absolute; top:70px; left:50%;
+  transform: translateX(-50%);
+  width:14px; height:12px;
   background:#222;
-  border-radius:50%;
+  border-radius: 6px 6px 10px 10px;
 }
-.bear .eye.left{ left:28px; }
-.bear .eye.right{ right:28px; }
-
-.bear .nose{
-  position:absolute; top:44px; left:50%;
+.bear2 .mouth{
+  position:absolute; top:82px; left:50%;
   transform: translateX(-50%);
-  width:16px; height:16px;
-  background:#222;
-  border-radius:50%;
+  width:26px; height:14px;
+  border-bottom:3px solid #222;
+  border-radius:0 0 20px 20px;
 }
-.bear .smile{
-  position:absolute; top:62px; left:50%;
+.bear2 .body{
+  position:absolute; bottom:10px; left:50%;
   transform: translateX(-50%);
-  width:46px; height:22px;
-  border-bottom:4px solid #222;
-  border-radius:0 0 40px 40px;
+  width:118px; height:72px;
+  background:#d39a75;
+  border-radius: 55px;
 }
-
-/* лапки + сердце */
-.bear .paws{
-  position:absolute; bottom:-2px; left:50%;
-  transform: translateX(-50%);
-  width:110px; height:64px;
-}
-.bear .paw{
-  position:absolute; bottom:10px;
-  width:34px; height:24px;
-  background:#c98f6b;
+.bear2 .paw{
+  position:absolute; bottom:18px;
+  width:34px; height:22px;
+  background:#c78c67;
   border-radius: 16px;
 }
-.bear .paw.left{ left:6px; transform: rotate(-10deg); }
-.bear .paw.right{ right:6px; transform: rotate(10deg); }
+.bear2 .paw.left{ left:20px; transform: rotate(-10deg); }
+.bear2 .paw.right{ right:20px; transform: rotate(10deg); }
 
-.bear .heart{
-  position:absolute; left:50%; top:16px;
+/* сердце в лапках */
+.bear2 .heart{
+  position:absolute; left:50%; bottom:28px;
   transform: translateX(-50%);
   width:34px; height:30px;
-  animation: heartPulse 1.25s ease-in-out infinite;
+  animation: heartPulse 1.2s ease-in-out infinite;
+  z-index:2;
 }
 @keyframes heartPulse{
   0%,100%{ transform: translateX(-50%) scale(1); }
-  50%{ transform: translateX(-50%) scale(1.1); }
+  50%{ transform: translateX(-50%) scale(1.12); }
 }
-.bear .heart:before,
-.bear .heart:after{
+.bear2 .heart:before,
+.bear2 .heart:after{
   content:"";
   position:absolute;
   width:18px; height:18px;
@@ -180,9 +215,9 @@ body{
   border-radius:50%;
   top:0;
 }
-.bear .heart:before{ left:0; }
-.bear .heart:after{ right:0; }
-.bear .heart .v{
+.bear2 .heart:before{ left:0; }
+.bear2 .heart:after{ right:0; }
+.bear2 .heart .v{
   position:absolute;
   left:50%; top:8px;
   transform: translateX(-50%) rotate(45deg);
@@ -191,15 +226,7 @@ body{
   border-radius:3px;
 }
 
-/* текст */
-p{
-  margin: 0 0 12px;
-  font-size: clamp(14px, 2.6vw, 16px);
-  opacity:.9;
-  line-height:1.35;
-}
-
-/* ✅ Кнопки: всегда в одном ряду на ПК, и красиво на мобилке */
+/* Кнопки */
 .buttons{
   display:flex;
   justify-content:center;
@@ -324,10 +351,9 @@ button:active{ transform: scale(.98); }
 .toast.show{display:block;}
 .toast a{color:#fff; text-decoration:underline;}
 
-/* ✅ МОБИЛКА — главный фокус */
+/* ✅ МОБИЛКА */
 @media (max-width:600px){
   .card{ padding:22px 16px; border-radius:24px; }
-  .bear-wrap{ width: 170px; height: 140px; }
   .buttons{
     display:grid;
     grid-template-columns: 1fr 1fr;
@@ -336,13 +362,10 @@ button:active{ transform: scale(.98); }
     min-height:96px;
   }
   button{ width:100%; }
-  /* на мобилке кнопка "Нет" НЕ абсолютная (не перекрывает Да) */
-  .no{
-    position:static;
-  }
+  .no{ position:static; } /* не перекрывает */
 }
 
-/* ✅ ПК: “Нет” убегает, но не перекрывает */
+/* ✅ ПК: “Нет” убегает */
 @media (min-width:601px){
   .no{
     position:absolute;
@@ -355,29 +378,32 @@ button:active{ transform: scale(.98); }
 
 <body>
 
-<div class="wrap">
+<div class="wrap" id="wrapRoot">
 
 <div class="screen active" id="screen1">
   <div class="card">
 
     <div class="bear-wrap" aria-hidden="true">
-      <div class="bear">
+      <div class="bear2">
         <div class="ear left"></div>
         <div class="ear right"></div>
+
         <div class="head">
           <div class="eye left"></div>
           <div class="eye right"></div>
-          <div class="nose"></div>
-          <div class="smile"></div>
+          <div class="cheek left"></div>
+          <div class="cheek right"></div>
+
           <div class="muzzle"></div>
+          <div class="nose"></div>
+          <div class="mouth"></div>
         </div>
-        <div class="paws">
-          <div class="paw left"></div>
-          <div class="paw right"></div>
-          <div class="heart">
-            <div class="v"></div>
-          </div>
-        </div>
+
+        <div class="body"></div>
+        <div class="paw left"></div>
+        <div class="paw right"></div>
+
+        <div class="heart"><div class="v"></div></div>
       </div>
     </div>
 
@@ -496,7 +522,7 @@ const mobileNoTexts = [
   "Ты уверена? 🙃",
   "Подумай ещё раз… 💗",
   "Не верю 😌",
-  "Кажется, твой палец промахнулся 😅",
+  "Кажется, палец промахнулся 😅",
   "Ну давай по-честному… 😇",
   "Я подожду твой «Да» 🥹",
 ];
@@ -555,11 +581,13 @@ window.addEventListener('load', ()=>{
 const screen1=document.getElementById('screen1');
 const screen2=document.getElementById('screen2');
 const overlay=document.getElementById('overlay');
+const wrapRoot=document.getElementById('wrapRoot');
 
 yesBtn.onclick=()=>{
   screen1.classList.remove('active');
   screen2.classList.add('active');
   overlay.classList.add('show');
+  wrapRoot.classList.add('has-long'); /* теперь можно скроллить вниз, и контент сверху */
   window.scrollTo({top:0, behavior:'smooth'});
 };
 
