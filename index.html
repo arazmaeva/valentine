@@ -214,18 +214,31 @@ p{
   left:50%;
   top: 86px;
   transform: translateX(-50%);
-  width: 34px;
-  height: 30px;
+  width: 30px; height: 30px;
   animation: heartBeat 1.1s ease-in-out infinite;
-}
-.bear .heart svg{
-  width:100%;
-  height:100%;
-  display:block;
 }
 @keyframes heartBeat{
   0%,100%{ transform: translateX(-50%) scale(1); }
-  50%{ transform: translateX(-50%) scale(1.15); }
+  50%{ transform: translateX(-50%) scale(1.12); }
+}
+.bear .heart::before,
+.bear .heart::after{
+  content:"";
+  position:absolute;
+  width: 16px; height: 24px;
+  background:#ff4d8a;
+  border-radius: 12px 12px 0 0;
+  top: 4px;
+}
+.bear .heart::before{
+  left: 8px;
+  transform: rotate(-45deg);
+  transform-origin: bottom left;
+}
+.bear .heart::after{
+  left: 8px;
+  transform: rotate(45deg);
+  transform-origin: bottom right;
 }
 
 
@@ -403,9 +416,9 @@ button:active{ transform: scale(.98); }
 
       <div class="paw left"></div>
       <div class="paw right"></div>
-     <div class="heart">
-     <svg viewBox="0 0 32 29" xmlns="http://www.w3.org/2000/svg">
-     <path d="M23.6 0c-2.4 0-4.6 1.1-6 2.9C16.2 1.1 14 0 11.6 0
+      <div class="heart">
+      <svg viewBox="0 0 32 29" xmlns="http://www.w3.org/2000/svg">
+      <path d="M23.6 0c-2.4 0-4.6 1.1-6 2.9C16.2 1.1 14 0 11.6 0
              7.2 0 3.6 3.6 3.6 8c0 8.6 12.4 15.9 14 16.8
              1.6-.9 14-8.2 14-16.8 0-4.4-3.6-8-8-8z"
           fill="#ff4d8a"/>
@@ -632,5 +645,3 @@ egg.onclick=()=>{
 </script>
 </body>
 </html>
-
-
