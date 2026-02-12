@@ -13,7 +13,7 @@
 }
 *{box-sizing:border-box}
 
-/* ✅ ВАЖНО: нормальный скролл на ПК/мобилке */
+/* ✅ нормальный скролл на ПК/мобилке */
 html, body{
   height:100%;
   overflow-x:hidden;
@@ -52,36 +52,162 @@ body{
   flex-direction:column;
   align-items:center;
   position:relative;
-  z-index:1; /* поверх сердечек */
+  z-index:1;
 }
 
 .card{
-  width:min(720px, 94vw);
+  width:min(760px, 94vw);
   background:var(--card);
   backdrop-filter: blur(10px);
-  border-radius:24px;
+  border-radius:28px;
   padding:28px 22px;
   box-shadow: 0 18px 60px rgba(0,0,0,.18);
   text-align:center;
   margin-bottom:20px;
 }
 
+/* Заголовок */
 .title-line{
-  white-space: nowrap;
   font-size: clamp(20px, 3.2vw, 34px);
   margin:0 0 10px;
-}
-@media (max-width:480px){
-  .title-line{ white-space:normal; }
+  line-height:1.15;
 }
 
+/* ✅ мишка (HTML + CSS) — всегда виден */
+.bear-wrap{
+  width: 160px;
+  height: 130px;
+  margin: 2px auto 10px;
+  position: relative;
+  animation: bearFloat 2.6s ease-in-out infinite;
+  filter: drop-shadow(0 10px 18px rgba(0,0,0,.10));
+}
+@keyframes bearFloat{
+  0%,100%{ transform: translateY(0) }
+  50%{ transform: translateY(-7px) }
+}
+.bear{
+  position:absolute;
+  left:50%; top:50%;
+  transform: translate(-50%, -50%);
+  width: 140px; height: 120px;
+}
+.bear .ear{
+  position:absolute; top:6px;
+  width:30px; height:30px;
+  background:#c98f6b;
+  border-radius:50%;
+}
+.bear .ear:after{
+  content:"";
+  position:absolute; inset:8px;
+  background:#f2c7b1;
+  border-radius:50%;
+  opacity:.95;
+}
+.bear .ear.left{ left:18px; }
+.bear .ear.right{ right:18px; }
+
+.bear .head{
+  position:absolute; top:18px; left:50%;
+  transform: translateX(-50%);
+  width:100px; height:90px;
+  background:#d9a07b;
+  border-radius:50%;
+}
+.bear .muzzle{
+  position:absolute; bottom:10px; left:50%;
+  transform: translateX(-50%);
+  width:72px; height:52px;
+  background:#f2c7b1;
+  border-radius: 50%;
+}
+.bear .eye{
+  position:absolute; top:32px;
+  width:10px; height:10px;
+  background:#222;
+  border-radius:50%;
+}
+.bear .eye.left{ left:28px; }
+.bear .eye.right{ right:28px; }
+
+.bear .nose{
+  position:absolute; top:44px; left:50%;
+  transform: translateX(-50%);
+  width:16px; height:16px;
+  background:#222;
+  border-radius:50%;
+}
+.bear .smile{
+  position:absolute; top:62px; left:50%;
+  transform: translateX(-50%);
+  width:46px; height:22px;
+  border-bottom:4px solid #222;
+  border-radius:0 0 40px 40px;
+}
+
+/* лапки + сердце */
+.bear .paws{
+  position:absolute; bottom:-2px; left:50%;
+  transform: translateX(-50%);
+  width:110px; height:64px;
+}
+.bear .paw{
+  position:absolute; bottom:10px;
+  width:34px; height:24px;
+  background:#c98f6b;
+  border-radius: 16px;
+}
+.bear .paw.left{ left:6px; transform: rotate(-10deg); }
+.bear .paw.right{ right:6px; transform: rotate(10deg); }
+
+.bear .heart{
+  position:absolute; left:50%; top:16px;
+  transform: translateX(-50%);
+  width:34px; height:30px;
+  animation: heartPulse 1.25s ease-in-out infinite;
+}
+@keyframes heartPulse{
+  0%,100%{ transform: translateX(-50%) scale(1); }
+  50%{ transform: translateX(-50%) scale(1.1); }
+}
+.bear .heart:before,
+.bear .heart:after{
+  content:"";
+  position:absolute;
+  width:18px; height:18px;
+  background:#ff4d6d;
+  border-radius:50%;
+  top:0;
+}
+.bear .heart:before{ left:0; }
+.bear .heart:after{ right:0; }
+.bear .heart .v{
+  position:absolute;
+  left:50%; top:8px;
+  transform: translateX(-50%) rotate(45deg);
+  width:18px; height:18px;
+  background:#ff4d6d;
+  border-radius:3px;
+}
+
+/* текст */
+p{
+  margin: 0 0 12px;
+  font-size: clamp(14px, 2.6vw, 16px);
+  opacity:.9;
+  line-height:1.35;
+}
+
+/* ✅ Кнопки: всегда в одном ряду на ПК, и красиво на мобилке */
 .buttons{
   display:flex;
   justify-content:center;
   gap:14px;
   position:relative;
-  min-height:92px;
-  margin-top:12px;
+  margin-top: 10px;
+  min-height:84px;
+  align-items:center;
 }
 
 button{
@@ -92,20 +218,14 @@ button{
   font-size:16px;
   cursor:pointer;
   box-shadow: 0 10px 24px rgba(0,0,0,.14);
+  transition: transform .12s ease, filter .12s ease;
   -webkit-tap-highlight-color: transparent;
 }
+button:active{ transform: scale(.98); }
 
-.yes{background:var(--yes);color:white;}
-.no{
-  background:var(--no);
-  color:white;
-  position:absolute;
-  left:50%;
-  top:6px;
-  transform:translateX(-50%);
-}
+.yes{ background:var(--yes); color:white; }
+.no{ background:var(--no); color:white; }
 
-/* ✅ Подсказка (у тебя её не было — поэтому “не появлялась”) */
 .hint{
   margin-top:12px;
   font-size:13px;
@@ -171,6 +291,7 @@ button{
   object-fit:cover;
 }
 
+/* Пасхалка */
 .egg{
   position:fixed;
   right:14px;
@@ -203,44 +324,31 @@ button{
 .toast.show{display:block;}
 .toast a{color:#fff; text-decoration:underline;}
 
-/* ✅ Мишка */
-.bear{
-  width:min(220px, 60vw);
-  margin: 6px auto 10px;
-  animation: bearFloat 2.6s ease-in-out infinite;
-  filter: drop-shadow(0 10px 18px rgba(0,0,0,.10));
-}
-@keyframes bearFloat{
-  0%,100%{ transform: translateY(0) }
-  50%{ transform: translateY(-6px) }
-}
-.heartPulse{
-  transform-origin:center;
-  animation: pulse 1.3s ease-in-out infinite;
-}
-@keyframes pulse{
-  0%,100%{ transform: scale(1) }
-  50%{ transform: scale(1.08) }
-}
-
-/* ✅ Мобилка: делаем “Да/Нет” красиво и удобно */
+/* ✅ МОБИЛКА — главный фокус */
 @media (max-width:600px){
-  .card{ padding:22px 16px; }
+  .card{ padding:22px 16px; border-radius:24px; }
+  .bear-wrap{ width: 170px; height: 140px; }
   .buttons{
     display:grid;
     grid-template-columns: 1fr 1fr;
     gap:12px;
-    min-height:110px;
     width:100%;
+    min-height:96px;
   }
   button{ width:100%; }
-  /* “Нет” остаётся убегающим, но стартует нормально */
+  /* на мобилке кнопка "Нет" НЕ абсолютная (не перекрывает Да) */
   .no{
-    left:auto;
-    top:auto;
-    transform:none;
+    position:static;
   }
-  .shot{flex:0 0 70vw;}
+}
+
+/* ✅ ПК: “Нет” убегает, но не перекрывает */
+@media (min-width:601px){
+  .no{
+    position:absolute;
+    left: calc(50% + 120px);
+    top: 10px;
+  }
 }
 </style>
 </head>
@@ -252,51 +360,26 @@ button{
 <div class="screen active" id="screen1">
   <div class="card">
 
-    <!-- ✅ Мишка с сердечком -->
-    <svg class="bear" viewBox="0 0 240 220" xmlns="http://www.w3.org/2000/svg" aria-label="bear">
-      <!-- ушки -->
-      <circle cx="65" cy="60" r="22" fill="#c98f6b"/>
-      <circle cx="175" cy="60" r="22" fill="#c98f6b"/>
-      <circle cx="65" cy="62" r="12" fill="#f2c7b1" opacity="0.9"/>
-      <circle cx="175" cy="62" r="12" fill="#f2c7b1" opacity="0.9"/>
-
-      <!-- голова -->
-      <circle cx="120" cy="95" r="62" fill="#d9a07b"/>
-      <!-- мордочка -->
-      <ellipse cx="120" cy="118" rx="46" ry="34" fill="#f2c7b1"/>
-
-      <!-- глаза -->
-      <circle cx="96" cy="92" r="6" fill="#2a2a2a"/>
-      <circle cx="144" cy="92" r="6" fill="#2a2a2a"/>
-      <!-- нос -->
-      <path d="M120 103c-7 0-12 5-12 11 0 7 6 12 12 12s12-5 12-12c0-6-5-11-12-11z" fill="#2a2a2a"/>
-      <!-- улыбка -->
-      <path d="M105 130c6 7 29 7 35 0" fill="none" stroke="#2a2a2a" stroke-width="4" stroke-linecap="round"/>
-
-      <!-- тело -->
-      <ellipse cx="120" cy="170" rx="62" ry="44" fill="#d9a07b"/>
-      <ellipse cx="120" cy="178" rx="44" ry="30" fill="#f2c7b1"/>
-
-      <!-- лапки -->
-      <ellipse cx="70" cy="176" rx="18" ry="14" fill="#c98f6b"/>
-      <ellipse cx="170" cy="176" rx="18" ry="14" fill="#c98f6b"/>
-
-      <!-- сердечко -->
-      <g class="heartPulse">
-        <path d="M120 150
-                 C120 138 104 136 100 146
-                 C96 156 106 166 120 176
-                 C134 166 144 156 140 146
-                 C136 136 120 138 120 150Z"
-              fill="#ff4d6d"/>
-        <path d="M120 150
-                 C120 138 104 136 100 146
-                 C96 156 106 166 120 176
-                 C134 166 144 156 140 146
-                 C136 136 120 138 120 150Z"
-              fill="none" stroke="#ff94a6" stroke-width="3" opacity="0.8"/>
-      </g>
-    </svg>
+    <div class="bear-wrap" aria-hidden="true">
+      <div class="bear">
+        <div class="ear left"></div>
+        <div class="ear right"></div>
+        <div class="head">
+          <div class="eye left"></div>
+          <div class="eye right"></div>
+          <div class="nose"></div>
+          <div class="smile"></div>
+          <div class="muzzle"></div>
+        </div>
+        <div class="paws">
+          <div class="paw left"></div>
+          <div class="paw right"></div>
+          <div class="heart">
+            <div class="v"></div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <h1 class="title-line">Ника, ты будешь моей валентинкой? 💗</h1>
     <p>Я приготовила самый важный вопрос…</p>
@@ -306,7 +389,6 @@ button{
       <button class="no" id="noBtn">Нет 🙃</button>
     </div>
 
-    <!-- ✅ Подсказка (как ты хотела) -->
     <div class="hint" id="hintText">Подсказка: иногда судьба оставляет только один вариант 💘</div>
 
   </div>
@@ -370,7 +452,7 @@ button{
 
 <div class="overlay" id="overlay">
   <div class="modal">
-    <img class="photo" src="img/00.jpg">
+    <img class="photo" src="img/00.jpg" alt="Фото 00">
     <h2>УРАА! 🥳</h2>
     <p>Теперь ты моя валентинка 💖</p>
     <button id="toStoryBtn">Дальше →</button>
@@ -381,7 +463,6 @@ button{
 <div class="toast" id="toast"></div>
 
 <script>
-
 /* Фоновые сердечки */
 for(let i=0;i<20;i++){
   const h=document.createElement('div');
@@ -406,11 +487,27 @@ photos.forEach((src,i)=>{
   rail.innerHTML+=`<div class="shot"><img src="${src}" alt="moment ${i+1}"></div>`;
 });
 
-/* ✅ Кнопка “Нет” — убегает корректно (и на ПК, и на телефоне) */
+/* “Нет” — ПК убегает, мобилка отвечает фразами */
 const btnArea = document.getElementById('btnArea');
-const noBtn=document.getElementById('noBtn');
+const noBtn = document.getElementById('noBtn');
+const yesBtn = document.getElementById('yesBtn');
 
-function moveNo(){
+const mobileNoTexts = [
+  "Ты уверена? 🙃",
+  "Подумай ещё раз… 💗",
+  "Не верю 😌",
+  "Кажется, твой палец промахнулся 😅",
+  "Ну давай по-честному… 😇",
+  "Я подожду твой «Да» 🥹",
+];
+
+let mobileNoIndex = 0;
+
+function isMobile(){
+  return window.matchMedia("(max-width: 600px)").matches;
+}
+
+function moveNoDesktop(){
   const area = btnArea.getBoundingClientRect();
   const btn  = noBtn.getBoundingClientRect();
   const pad = 6;
@@ -425,12 +522,36 @@ function moveNo(){
   noBtn.style.top  = y + "px";
   noBtn.style.transform = "none";
 }
-noBtn.addEventListener('mouseenter', moveNo);
-noBtn.addEventListener('touchstart', (e)=>{ e.preventDefault(); moveNo(); }, {passive:false});
-window.addEventListener('load', moveNo);
+
+noBtn.addEventListener('mouseenter', ()=>{
+  if(!isMobile()) moveNoDesktop();
+});
+
+noBtn.addEventListener('click', (e)=>{
+  if(isMobile()){
+    e.preventDefault();
+    noBtn.textContent = mobileNoTexts[mobileNoIndex % mobileNoTexts.length];
+    mobileNoIndex++;
+    yesBtn.style.transform = "scale(1.05)";
+    setTimeout(()=> yesBtn.style.transform = "", 200);
+  }
+});
+
+noBtn.addEventListener('touchstart', (e)=>{
+  if(isMobile()){
+    e.preventDefault();
+    noBtn.click();
+  }else{
+    e.preventDefault();
+    moveNoDesktop();
+  }
+},{passive:false});
+
+window.addEventListener('load', ()=>{
+  if(!isMobile()) moveNoDesktop();
+});
 
 /* Переход */
-const yesBtn=document.getElementById('yesBtn');
 const screen1=document.getElementById('screen1');
 const screen2=document.getElementById('screen2');
 const overlay=document.getElementById('overlay');
@@ -474,7 +595,6 @@ egg.onclick=()=>{
   toast.classList.add('show');
   setTimeout(()=>toast.classList.remove('show'),3000);
 };
-
 </script>
 </body>
 </html>
