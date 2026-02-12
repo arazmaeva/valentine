@@ -13,6 +13,14 @@
 }
 *{box-sizing:border-box}
 
+/* ✅ ВАЖНО: нормальный скролл на ПК/мобилке */
+html, body{
+  height:100%;
+  overflow-x:hidden;
+  overflow-y:auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 body{
   margin:0;
   font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
@@ -21,7 +29,6 @@ body{
     radial-gradient(1200px 800px at 80% 80%, #ffd6e0, transparent 60%),
     linear-gradient(135deg, var(--bg1), #ff758f);
   color:var(--text);
-  overflow-x:hidden;   /* можно скроллить вверх/вниз */
 }
 
 /* Плавающие сердечки */
@@ -30,10 +37,11 @@ body{
   pointer-events:none;
   opacity:.22;
   animation: floatUp linear infinite;
+  z-index:0;
 }
 @keyframes floatUp{
-  from{ transform: translateY(100vh); }
-  to{ transform: translateY(-120vh); }
+  from{ transform: translateY(110vh); }
+  to{ transform: translateY(-140vh); }
 }
 
 /* Контент */
@@ -43,6 +51,8 @@ body{
   display:flex;
   flex-direction:column;
   align-items:center;
+  position:relative;
+  z-index:1; /* поверх сердечек */
 }
 
 .card{
@@ -59,6 +69,7 @@ body{
 .title-line{
   white-space: nowrap;
   font-size: clamp(20px, 3.2vw, 34px);
+  margin:0 0 10px;
 }
 @media (max-width:480px){
   .title-line{ white-space:normal; }
@@ -69,7 +80,8 @@ body{
   justify-content:center;
   gap:14px;
   position:relative;
-  min-height:80px;
+  min-height:92px;
+  margin-top:12px;
 }
 
 button{
@@ -79,6 +91,8 @@ button{
   font-weight:700;
   font-size:16px;
   cursor:pointer;
+  box-shadow: 0 10px 24px rgba(0,0,0,.14);
+  -webkit-tap-highlight-color: transparent;
 }
 
 .yes{background:var(--yes);color:white;}
@@ -86,9 +100,20 @@ button{
   background:var(--no);
   color:white;
   position:absolute;
+  left:50%;
+  top:6px;
+  transform:translateX(-50%);
 }
 
-.screen{display:none;}
+/* ✅ Подсказка (у тебя её не было — поэтому “не появлялась”) */
+.hint{
+  margin-top:12px;
+  font-size:13px;
+  opacity:.75;
+}
+
+/* Экраны */
+.screen{display:none; width:100%;}
 .screen.active{display:block;}
 
 .overlay{
@@ -99,6 +124,7 @@ button{
   align-items:center;
   justify-content:center;
   z-index:10;
+  padding:18px;
 }
 .overlay.show{display:flex;}
 
@@ -129,6 +155,7 @@ button{
   display:flex;
   gap:12px;
   overflow-x:auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .shot{
@@ -136,6 +163,7 @@ button{
   background:white;
   border-radius:18px;
   overflow:hidden;
+  box-shadow: 0 12px 26px rgba(0,0,0,.10);
 }
 .shot img{
   width:100%;
@@ -155,6 +183,7 @@ button{
   align-items:center;
   justify-content:center;
   cursor:pointer;
+  z-index:20;
 }
 
 .toast{
@@ -167,10 +196,50 @@ button{
   padding:10px 14px;
   border-radius:12px;
   display:none;
+  z-index:25;
+  max-width:min(520px,92vw);
+  text-align:center;
 }
 .toast.show{display:block;}
+.toast a{color:#fff; text-decoration:underline;}
 
+/* ✅ Мишка */
+.bear{
+  width:min(220px, 60vw);
+  margin: 6px auto 10px;
+  animation: bearFloat 2.6s ease-in-out infinite;
+  filter: drop-shadow(0 10px 18px rgba(0,0,0,.10));
+}
+@keyframes bearFloat{
+  0%,100%{ transform: translateY(0) }
+  50%{ transform: translateY(-6px) }
+}
+.heartPulse{
+  transform-origin:center;
+  animation: pulse 1.3s ease-in-out infinite;
+}
+@keyframes pulse{
+  0%,100%{ transform: scale(1) }
+  50%{ transform: scale(1.08) }
+}
+
+/* ✅ Мобилка: делаем “Да/Нет” красиво и удобно */
 @media (max-width:600px){
+  .card{ padding:22px 16px; }
+  .buttons{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:12px;
+    min-height:110px;
+    width:100%;
+  }
+  button{ width:100%; }
+  /* “Нет” остаётся убегающим, но стартует нормально */
+  .no{
+    left:auto;
+    top:auto;
+    transform:none;
+  }
   .shot{flex:0 0 70vw;}
 }
 </style>
@@ -182,12 +251,64 @@ button{
 
 <div class="screen active" id="screen1">
   <div class="card">
+
+    <!-- ✅ Мишка с сердечком -->
+    <svg class="bear" viewBox="0 0 240 220" xmlns="http://www.w3.org/2000/svg" aria-label="bear">
+      <!-- ушки -->
+      <circle cx="65" cy="60" r="22" fill="#c98f6b"/>
+      <circle cx="175" cy="60" r="22" fill="#c98f6b"/>
+      <circle cx="65" cy="62" r="12" fill="#f2c7b1" opacity="0.9"/>
+      <circle cx="175" cy="62" r="12" fill="#f2c7b1" opacity="0.9"/>
+
+      <!-- голова -->
+      <circle cx="120" cy="95" r="62" fill="#d9a07b"/>
+      <!-- мордочка -->
+      <ellipse cx="120" cy="118" rx="46" ry="34" fill="#f2c7b1"/>
+
+      <!-- глаза -->
+      <circle cx="96" cy="92" r="6" fill="#2a2a2a"/>
+      <circle cx="144" cy="92" r="6" fill="#2a2a2a"/>
+      <!-- нос -->
+      <path d="M120 103c-7 0-12 5-12 11 0 7 6 12 12 12s12-5 12-12c0-6-5-11-12-11z" fill="#2a2a2a"/>
+      <!-- улыбка -->
+      <path d="M105 130c6 7 29 7 35 0" fill="none" stroke="#2a2a2a" stroke-width="4" stroke-linecap="round"/>
+
+      <!-- тело -->
+      <ellipse cx="120" cy="170" rx="62" ry="44" fill="#d9a07b"/>
+      <ellipse cx="120" cy="178" rx="44" ry="30" fill="#f2c7b1"/>
+
+      <!-- лапки -->
+      <ellipse cx="70" cy="176" rx="18" ry="14" fill="#c98f6b"/>
+      <ellipse cx="170" cy="176" rx="18" ry="14" fill="#c98f6b"/>
+
+      <!-- сердечко -->
+      <g class="heartPulse">
+        <path d="M120 150
+                 C120 138 104 136 100 146
+                 C96 156 106 166 120 176
+                 C134 166 144 156 140 146
+                 C136 136 120 138 120 150Z"
+              fill="#ff4d6d"/>
+        <path d="M120 150
+                 C120 138 104 136 100 146
+                 C96 156 106 166 120 176
+                 C134 166 144 156 140 146
+                 C136 136 120 138 120 150Z"
+              fill="none" stroke="#ff94a6" stroke-width="3" opacity="0.8"/>
+      </g>
+    </svg>
+
     <h1 class="title-line">Ника, ты будешь моей валентинкой? 💗</h1>
     <p>Я приготовила самый важный вопрос…</p>
+
     <div class="buttons" id="btnArea">
       <button class="yes" id="yesBtn">Да 💞</button>
       <button class="no" id="noBtn">Нет 🙃</button>
     </div>
+
+    <!-- ✅ Подсказка (как ты хотела) -->
+    <div class="hint" id="hintText">Подсказка: иногда судьба оставляет только один вариант 💘</div>
+
   </div>
 </div>
 
@@ -202,33 +323,40 @@ button{
   <div class="story" id="storyBlock" style="display:none;">
     <h3>Наша история 🤍</h3>
     <p>
-Иногда судьба прячется в одном случайном решении.
-Я просто пошла прокалывать хрящ в обеденный перерыв.
-Сомневалась.
-Спросила у Алисы: орёл или решка.
+Иногда судьба начинается с какой-то мелочи.
+С обеденного перерыва.
+С сомнения.
+С вопроса Алисе: «Орёл или решка?»
+
 Выпал орёл.
-Я проколола септум —
-и вместе с ним, кажется, открыла дверь к тебе.
+Я проколола септум — и даже не подозревала, что вместе с ним открываю дверь к тебе.
+
 20 июня. DUO.
-Ты в кожанке, с мягкой улыбкой.
-Мы пили кофе, гуляли у Арены, смеялись и флиртовали —
-и уже тогда внутри что-то щёлкнуло.
+Ты в кожанке, с той самой мягкой улыбкой.
+Мы пили кофе, гуляли у Арены, смеялись, флиртовали —
+и внутри тихо щёлкнуло: это не просто встреча.
+
 Потом мы поехали ко мне.
 Гуляли с Муной.
 Я завела тебя в какие-то дебри,
 а вечером мы лежали и смотрели фильм, держась за руки.
-Я сжимала твою ладонь так крепко,
-будто боялась отпустить.
+Я сжимала твою ладонь чуть крепче, чем нужно —
+будто уже тогда боялась тебя отпустить.
+
 Был вечер перед твоим отъездом.
-«В Burger King или ко мне — познакомиться с кисами?»
-Кисы были всего лишь предлогом.
+«Burger King или ко мне — познакомиться с кисами?»
+Мы обе знали, что кисы — лишь предлог.
+
 Я обняла тебя.
-Поцеловала. (ну и 18+)
-И в тот момент всё стало ясно.
+Поцеловала.
+И в тот момент всё стало удивительно ясным и спокойным —
+как будто я наконец оказалась там, где должна быть.
+
 8 июля 2025 года ты предложила мне быть вместе.
-И я поняла — иногда один случайный орёл
-приводит к самой большой любви 🤍
-И теперь я каждый день благодарю судьбу за тебя 💖
+И я поняла: иногда один случайный орёл
+приводит к самой настоящей любви.
+
+И теперь каждый день я благодарю судьбу за тебя 🤍💖
     </p>
   </div>
 
@@ -262,6 +390,7 @@ for(let i=0;i<20;i++){
   h.style.left=Math.random()*100+'vw';
   h.style.fontSize=(14+Math.random()*20)+'px';
   h.style.animationDuration=(6+Math.random()*8)+'s';
+  h.style.top = (100 + Math.random()*40) + 'vh';
   document.body.appendChild(h);
 }
 
@@ -274,15 +403,31 @@ const photos=[
 
 const rail=document.getElementById('rail');
 photos.forEach((src,i)=>{
-  rail.innerHTML+=`<div class="shot"><img src="${src}"></div>`;
+  rail.innerHTML+=`<div class="shot"><img src="${src}" alt="moment ${i+1}"></div>`;
 });
 
-/* Кнопка нет */
+/* ✅ Кнопка “Нет” — убегает корректно (и на ПК, и на телефоне) */
+const btnArea = document.getElementById('btnArea');
 const noBtn=document.getElementById('noBtn');
-noBtn.addEventListener('mouseenter',()=>{
-  noBtn.style.left=Math.random()*200+'px';
-  noBtn.style.top=Math.random()*60+'px';
-});
+
+function moveNo(){
+  const area = btnArea.getBoundingClientRect();
+  const btn  = noBtn.getBoundingClientRect();
+  const pad = 6;
+
+  const maxX = Math.max(0, area.width - btn.width - pad*2);
+  const maxY = Math.max(0, area.height - btn.height - pad*2);
+
+  const x = pad + Math.random()*maxX;
+  const y = pad + Math.random()*maxY;
+
+  noBtn.style.left = x + "px";
+  noBtn.style.top  = y + "px";
+  noBtn.style.transform = "none";
+}
+noBtn.addEventListener('mouseenter', moveNo);
+noBtn.addEventListener('touchstart', (e)=>{ e.preventDefault(); moveNo(); }, {passive:false});
+window.addEventListener('load', moveNo);
 
 /* Переход */
 const yesBtn=document.getElementById('yesBtn');
@@ -294,13 +439,24 @@ yesBtn.onclick=()=>{
   screen1.classList.remove('active');
   screen2.classList.add('active');
   overlay.classList.add('show');
+  window.scrollTo({top:0, behavior:'smooth'});
+};
+
+document.getElementById('openModalBtn').onclick=()=>{
+  overlay.classList.add('show');
 };
 
 document.getElementById('toStoryBtn').onclick=()=>{
   overlay.classList.remove('show');
   document.getElementById('storyBlock').style.display='block';
   document.getElementById('galleryBlock').style.display='block';
+  setTimeout(()=>document.getElementById('storyBlock').scrollIntoView({behavior:'smooth'}), 120);
 };
+
+/* Закрытие модалки по клику вне окна */
+overlay.addEventListener('click', (e)=>{
+  if(e.target === overlay) overlay.classList.remove('show');
+});
 
 /* Пасхалка */
 const egg=document.getElementById('egg');
@@ -313,7 +469,7 @@ egg.onclick=()=>{
     toast.innerText="Ещё чуть-чуть… 😉 ("+taps+"/7)";
   }else{
     taps=0;
-    toast.innerHTML='<a href="https://www.youtube.com/results?search_query=Green+Book+1%3A09%3A53" target="_blank" style="color:white;text-decoration:underline;">Зелёная книга — 1:09:53</a>';
+    toast.innerHTML='<a href="https://www.youtube.com/results?search_query=%D0%97%D0%B5%D0%BB%D1%91%D0%BD%D0%B0%D1%8F+%D0%BA%D0%BD%D0%B8%D0%B3%D0%B0+1%3A09%3A53" target="_blank">Зелёная книга, 1:09:53</a>';
   }
   toast.classList.add('show');
   setTimeout(()=>toast.classList.remove('show'),3000);
