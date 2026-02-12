@@ -44,8 +44,7 @@ body{
   to{ transform: translateY(-140vh); }
 }
 
-/* ✅ Центровка как раньше на ПК:
-   wrap занимает минимум высоту экрана и центрирует первый экран */
+/* ✅ Центровка как раньше на ПК */
 .wrap{
   width:100%;
   min-height:100vh;
@@ -53,12 +52,10 @@ body{
   display:flex;
   flex-direction:column;
   align-items:center;
-  justify-content:center; /* главное */
+  justify-content:center;
   position:relative;
   z-index:1;
 }
-
-/* Когда появится экран 2, пусть можно нормально скроллить вниз */
 .wrap.has-long{
   justify-content:flex-start;
 }
@@ -74,7 +71,6 @@ body{
   margin-bottom:20px;
 }
 
-/* Заголовок */
 .title-line{
   font-size: clamp(20px, 3.2vw, 34px);
   margin:0 0 10px;
@@ -88,7 +84,7 @@ p{
   line-height:1.35;
 }
 
-/* ✅ Новый мишка (милее + с глазками) */
+/* ✅ МИШКА: теперь твой GIF с глазками */
 .bear-wrap{
   width: 170px;
   height: 140px;
@@ -101,129 +97,13 @@ p{
   0%,100%{ transform: translateY(0) }
   50%{ transform: translateY(-8px) }
 }
-.bear2{
-  position:absolute;
-  left:50%; top:50%;
-  transform: translate(-50%, -50%);
-  width: 150px; height: 130px;
-}
-.bear2 .ear{
-  position:absolute; top:14px;
-  width:34px; height:34px;
-  background:#c78c67;
-  border-radius:50%;
-}
-.bear2 .ear:after{
-  content:"";
-  position:absolute; inset:9px;
-  background:#f6d0bd;
-  border-radius:50%;
-}
-.bear2 .ear.left{ left:18px; }
-.bear2 .ear.right{ right:18px; }
-
-.bear2 .head{
-  position:absolute; top:22px; left:50%;
-  transform: translateX(-50%);
-  width:110px; height:98px;
-  background:#d9a07b;
-  border-radius: 48% 48% 52% 52%;
-}
-.bear2 .cheek{
-  position:absolute; top:54px;
-  width:16px; height:10px;
-  background:#ffb3c1;
-  opacity:.75;
-  border-radius: 999px;
-  filter: blur(.2px);
-}
-.bear2 .cheek.left{ left:16px; }
-.bear2 .cheek.right{ right:16px; }
-
-.bear2 .eye{
-  position:absolute; top:44px;
-  width:12px; height:12px;
-  background:#222;
-  border-radius:50%;
-}
-.bear2 .eye.left{ left:30px; }
-.bear2 .eye.right{ right:30px; }
-.bear2 .eye:after{
-  content:"";
-  position:absolute; top:2px; left:2px;
-  width:4px; height:4px;
-  background:#fff;
-  border-radius:50%;
-  opacity:.9;
-}
-
-.bear2 .muzzle{
-  position:absolute; top:58px; left:50%;
-  transform: translateX(-50%);
-  width:76px; height:54px;
-  background:#f6d0bd;
-  border-radius: 50%;
-}
-.bear2 .nose{
-  position:absolute; top:70px; left:50%;
-  transform: translateX(-50%);
-  width:14px; height:12px;
-  background:#222;
-  border-radius: 6px 6px 10px 10px;
-}
-.bear2 .mouth{
-  position:absolute; top:82px; left:50%;
-  transform: translateX(-50%);
-  width:26px; height:14px;
-  border-bottom:3px solid #222;
-  border-radius:0 0 20px 20px;
-}
-.bear2 .body{
-  position:absolute; bottom:10px; left:50%;
-  transform: translateX(-50%);
-  width:118px; height:72px;
-  background:#d39a75;
-  border-radius: 55px;
-}
-.bear2 .paw{
-  position:absolute; bottom:18px;
-  width:34px; height:22px;
-  background:#c78c67;
-  border-radius: 16px;
-}
-.bear2 .paw.left{ left:20px; transform: rotate(-10deg); }
-.bear2 .paw.right{ right:20px; transform: rotate(10deg); }
-
-/* сердце в лапках */
-.bear2 .heart{
-  position:absolute; left:50%; bottom:28px;
-  transform: translateX(-50%);
-  width:34px; height:30px;
-  animation: heartPulse 1.2s ease-in-out infinite;
-  z-index:2;
-}
-@keyframes heartPulse{
-  0%,100%{ transform: translateX(-50%) scale(1); }
-  50%{ transform: translateX(-50%) scale(1.12); }
-}
-.bear2 .heart:before,
-.bear2 .heart:after{
-  content:"";
-  position:absolute;
-  width:18px; height:18px;
-  background:#ff4d6d;
-  border-radius:50%;
-  top:0;
-}
-.bear2 .heart:before{ left:0; }
-.bear2 .heart:after{ right:0; }
-.bear2 .heart .v{
-  position:absolute;
-  left:50%; top:8px;
-  transform: translateX(-50%) rotate(45deg);
-  width:18px; height:18px;
-  background:#ff4d6d;
-  border-radius:3px;
+.bear-gif{
+  width: 160px;
+  height: auto;
+  display:block;
+  margin: 0 auto;
+  user-select:none;
+  -webkit-user-drag: none;
 }
 
 /* Кнопки */
@@ -362,7 +242,7 @@ button:active{ transform: scale(.98); }
     min-height:96px;
   }
   button{ width:100%; }
-  .no{ position:static; } /* не перекрывает */
+  .no{ position:static; }
 }
 
 /* ✅ ПК: “Нет” убегает */
@@ -383,28 +263,9 @@ button:active{ transform: scale(.98); }
 <div class="screen active" id="screen1">
   <div class="card">
 
+    <!-- ✅ МИШКА ЗАМЕНЁН ТОЛЬКО ЗДЕСЬ -->
     <div class="bear-wrap" aria-hidden="true">
-      <div class="bear2">
-        <div class="ear left"></div>
-        <div class="ear right"></div>
-
-        <div class="head">
-          <div class="eye left"></div>
-          <div class="eye right"></div>
-          <div class="cheek left"></div>
-          <div class="cheek right"></div>
-
-          <div class="muzzle"></div>
-          <div class="nose"></div>
-          <div class="mouth"></div>
-        </div>
-
-        <div class="body"></div>
-        <div class="paw left"></div>
-        <div class="paw right"></div>
-
-        <div class="heart"><div class="v"></div></div>
-      </div>
+      <img class="bear-gif" src="img/bear.gif" alt="">
     </div>
 
     <h1 class="title-line">Ника, ты будешь моей валентинкой? 💗</h1>
@@ -587,7 +448,7 @@ yesBtn.onclick=()=>{
   screen1.classList.remove('active');
   screen2.classList.add('active');
   overlay.classList.add('show');
-  wrapRoot.classList.add('has-long'); /* теперь можно скроллить вниз, и контент сверху */
+  wrapRoot.classList.add('has-long');
   window.scrollTo({top:0, behavior:'smooth'});
 };
 
